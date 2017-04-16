@@ -1,32 +1,38 @@
 import React from 'react';
 import { Provider } from 'react-redux';
+import { ApolloProvider } from 'react-apollo';
+import { Platform } from 'react-native';
 import Navigator from 'native-navigation';
+import KeyboardContainer from './components/KeyboardContainer';
 import unwrapDefaultExport from './utils/unwrapDefaultExport';
 import store from './store';
+import client from './client';
 
-
-function wrapComponent(screenName, ScreenThunk, options) {
+function wrapComponent(screenName, ScreenThunk) {
   class Wrapper extends React.Component {
-    constructor(props, context) {
-      super(props, context);
-      this.Component = unwrapDefaultExport(ScreenThunk());
-      this.screenName = screenName;
-    }
     render() {
-      const { Component } = this;
-      let connectedScreen = (
+      const Component = unwrapDefaultExport(ScreenThunk());
+      let screen = <Component {...this.props} />;
+
+      if (Platform.OS === 'ios') {
+        screen = (
+          <KeyboardContainer>
+            {screen}
+          </KeyboardContainer>
+        );
+      }
+
+      screen = (
         <Provider store={store}>
-          <Component {...this.props} />
+          {screen}
         </Provider>
       );
-      /*if (options.theme) {
-        connectedScreen = (
-          <ThemeProvider theme={options.theme}>
-            {connectedScreen}
-          </ThemeProvider>
-        );
-      }*/
-      return connectedScreen;
+      screen = (
+        <ApolloProvider store={store} client={client}>
+          {screen}
+        </ApolloProvider>
+      );
+      return screen;
     }
   }
 

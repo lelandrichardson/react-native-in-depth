@@ -1,16 +1,15 @@
 /* flow */
 /* eslint-disable global-require */
-import {
-  Platform,
-} from 'react-native';
 import { applyMiddleware, compose, createStore } from 'redux';
 import thunk from 'redux-thunk';
 import pack from 'redux-pack';
 import unwrapDefaultExport from './utils/unwrapDefaultExport';
+import client from './client';
 
 const middlewares = [
   thunk,
   pack.middleware,
+  client.middleware(),
 ];
 
 if (__DEV__) {
@@ -39,8 +38,8 @@ const enhancer = compose(
 // Generate our Redux store
 const store = createStore(
   unwrapDefaultExport(require('./reducers/mainReducer')),
-  undefined, // initial state
-  undefined,
+  {}, // initial state
+  enhancer,
 );
 
 if (__DEV__) {

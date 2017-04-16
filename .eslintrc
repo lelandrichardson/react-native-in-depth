@@ -1,0 +1,111 @@
+{
+  "root": true,
+  "parser": "babel-eslint",
+  "extends": ["airbnb"],
+  "env": {
+    "node": true
+  },
+  "plugins": [
+    "prefer-object-spread"
+  ],
+  "ecmaFeatures": {
+    "arrowFunctions": true,
+    "blockBindings": true,
+    "classes": true,
+    "defaultParams": true,
+    "destructuring": true,
+    "forOf": true,
+    "generators": false,
+    "modules": true,
+    "experimentalObjectRestSpread": true,
+    "objectLiteralComputedProperties": true,
+    "objectLiteralDuplicateProperties": false,
+    "objectLiteralShorthandMethods": true,
+    "objectLiteralShorthandProperties": true,
+    "restParams": true,
+    "spread": true,
+    "superInFunctions": true,
+    "templateStrings": true,
+    "jsx": true
+  },
+  "rules": {
+    "global-require": 0,
+    "new-cap": 0,
+    "no-use-before-define": 0,
+    "arrow-body-style": 0,
+    // triple equals is required except for when comparing with null
+    "eqeqeq": [2, "allow-null"],
+    // Allow console methods, which get removed during build process
+    "no-console": 0,
+    // Disable `arrow-parens` because it conflicts with Flow.
+    "arrow-parens": 0,
+    "no-restricted-imports": [2, {
+      "patterns": ["airbnb-dls/private/*"]
+    }],
+    // Do not enforce component method order
+    "no-restricted-properties": [2, {
+      "object": "arguments",
+      "property": "callee",
+      "message": "arguments.callee is deprecated,"
+    }, {
+      "property": "__defineGetter__",
+      "message": "Please use Object.defineProperty instead."
+    }, {
+      "property": "__defineSetter__",
+      "message": "Please use Object.defineProperty instead."
+    }, {
+      "object": "NativeModules",
+      "message": "Use require('react-native-safe-module').module(...) instead."
+    }, {
+      "object": "requireNativeComponent",
+      "message": "Use require('react-native-safe-module').component(...) instead."
+    }, {
+      "property": "NativeModules",
+      "message": "Use require('react-native-safe-module').module(...) instead."
+    }, {
+      "property": "requireNativeComponent",
+      "message": "Use require('react-native-safe-module').component(...) instead."
+    }],
+    "no-mixed-operators": [2, {
+      "groups": [
+        // Modify the groups such that "+" and "-" can be mixed, and also
+        // "*" and "/" can be mixed, but not i.e. "+" and "*".
+        ["+", "*", "/", "%", "**"],
+        ["-", "*", "/", "%", "**"],
+        // Untouched groups
+        ["&", "|", "^", "~", "<<", ">>", ">>>"],
+        ["==", "!=", "===", "!==", ">", ">=", "<", "<="],
+        ["&&", "||"],
+        ["in", "instanceof"]
+      ]
+    }],
+    // TODO(spike): remove prefer-object-spread?
+    "prefer-object-spread/prefer-object-spread": 2,
+    "react/sort-comp": [0],
+    "react/no-multi-comp": [1, { "ignoreStateless": true }],
+    "react/jsx-filename-extension": [2, { "extensions": [".js", ".jsx"] }],
+    "react/jsx-no-bind": 0,
+    "react/prefer-stateless-function": 0,
+    // This rule is producing a bunch of false-positives.
+    "react/no-unused-prop-types": 0,
+    // Not quite ready to enforce this one yet; if we're willing to
+    // put in the work to refactor existing code, let's enforce it.
+    "react/forbid-prop-types": 0,
+    "react/no-direct-mutation-state": 2,
+    "import/no-unresolved": [2, { "ignore": ["^lodash", "\\.png$"] }]
+  },
+  "globals": {
+    "__DEV__": true,
+    "__TESTENV__": true,
+    "__DEBUGGING_REMOTELY__": true,
+    "requestAnimationFrame": true
+  },
+  "settings": {
+    "flowtype": {
+      "onlyFilesWithFlowAnnotation": true
+    },
+    "import/resolver": {
+      "babel-module": {}
+    }
+  }
+}

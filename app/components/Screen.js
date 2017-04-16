@@ -1,8 +1,4 @@
 import React, { PropTypes } from 'react';
-import {
-  ScrollView,
-} from 'react-native';
-
 import Navigator from 'native-navigation';
 
 const propTypes = {
@@ -14,11 +10,7 @@ const propTypes = {
 const defaultProps = {
 };
 
-const contextTypes = {
-  nativeNavigationInstanceId: PropTypes.string,
-};
-
-export default class Screen extends React.Component {
+class Screen extends React.Component {
   render() {
     const {
       children,
@@ -30,16 +22,9 @@ export default class Screen extends React.Component {
         title={title}
         backgroundColor="#f7f7f7"
         elevation={4}
-        onBackPress={() => console.log('onBackPress')}
-        onLeftPress={() => console.log('onLeftPress')}
-        onRightPress={(x) => console.log('onRightPress', x)}
-        onAppear={() => console.log('onAppear', this.context.nativeNavigationInstanceId)}
-        onDisappear={() => console.log('onDisappear', this.context.nativeNavigationInstanceId)}
+        {...this.props}
       >
-        <ScrollView>
-          <Navigator.Spacer animated />
-          {children}
-        </ScrollView>
+        {children}
       </Navigator.Config>
     );
   }
@@ -47,4 +32,5 @@ export default class Screen extends React.Component {
 
 Screen.defaultProps = defaultProps;
 Screen.propTypes = propTypes;
-Screen.contextTypes = contextTypes;
+
+export default Screen;

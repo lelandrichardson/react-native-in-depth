@@ -1,7 +1,7 @@
-const initialState = {};
+import { combineReducers } from 'redux';
+import client from '../client';
 
-function mainReducer (state = initialState, action) {
-  return state;
-}
-
-module.exports = mainReducer;
+module.exports = combineReducers({
+  user: require('./userReducer'),
+  apollo: client.reducer(),
+});

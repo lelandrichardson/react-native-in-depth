@@ -1,3 +1,16 @@
 {
-"presets": ["react-native"]
+  "presets": ["react-native"],
+  "plugins": [
+    [
+      "module-resolver",
+      {
+        "root": [
+          "./lib"
+        ],
+        "alias": {
+
+        }
+      }
+    ]
+  ]
 }

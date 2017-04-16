@@ -16,7 +16,7 @@ target 'ReactNativeChat' do
     'RCTWebSocket', # needed for debugging
     'RCTAnimation',
     'RCTImage',
-    'RCTNetwork'
+    'RCTNetwork',
     # Add any other subspecs you want to use in your project
   ]
 

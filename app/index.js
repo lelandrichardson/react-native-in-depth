@@ -1,12 +1,9 @@
-import { LOGIN, ROOT } from './routes';
-
+import { ROOT, ROOM, ROOMS, SETTINGS, ADD_ROOM } from './routes';
 import registerScreen from './registerScreen';
 
-registerScreen(LOGIN, () => require('./screens/Login'));
-registerScreen(ROOT, () => require('./screens/Login'));
+registerScreen(ROOT, () => require('./screens/Rooms'));
 
-
-// import Navigator from 'native-navigation';
-
-// Navigator.registerScreen(LOGIN, () => require('./screens/Login'));
-// Navigator.registerScreen(ROOT, () => require('./screens/Login'));
+registerScreen(ROOM, () => require('./screens/Room'));
+registerScreen(ROOMS, () => require('./screens/Rooms'));
+registerScreen(SETTINGS, () => require('./screens/Settings'));
+registerScreen(ADD_ROOM, () => require('./screens/AddRoom'));
