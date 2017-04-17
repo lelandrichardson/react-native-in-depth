@@ -16,92 +16,7 @@ import withKeyboardHeight from '../components/withKeyboardHeight';
 import Invert from '../components/Invert';
 import Loader from '../components/Loader';
 import realtime from '../utils/realtime';
-import oneAtATime from '../utils/oneAtATime';
 import { SETTINGS } from '../routes';
-
-const createMessageMutation = gql`
-  mutation (
-    $roomId: ID,
-    $senderName: String!,
-    $senderImage: String,
-    $text: String!
-  ) {
-    createMessage(
-      roomId: $roomId
-      senderName: $senderName
-      senderImage: $senderImage
-      text: $text
-    ) {
-      id
-      senderName
-      senderImage
-      text
-      createdAt
-    }
-  }
-`;
-
-const MessagesQuery = gql`
-  query MessageQuery ($roomId: ID, $pageSize: Int) {
-    allMessages(
-      first: $pageSize,
-      filter: {
-        room: {
-          id: $roomId
-        }
-      },
-      orderBy: createdAt_DESC
-    ) {
-      id
-      senderName
-      senderImage
-      text
-      createdAt
-    }
-  }
-`;
-
-const MoreMessagesQuery = gql`
-  query MessageQuery ($roomId: ID, $pageSize: Int, $after: String) {
-    allMessages(
-      first: $pageSize,
-      after: $after,
-      filter: {
-        room: {
-          id: $roomId
-        }
-      },
-      orderBy: createdAt_DESC
-    ) {
-      id
-      senderName
-      senderImage
-      text
-      createdAt
-    }
-  }
-`;
-
-const SubscriptionQuery = gql`
-  subscription newMessages($roomId: ID) {
-    Message(filter: {
-      node: {
-        room: {
-          id: $roomId
-        }
-      },
-      mutation_in: [CREATED]
-    }) {
-      node {
-        id
-        senderName
-        senderImage
-        text
-        createdAt
-      }
-    }
-  }
-`;
 
 const propTypes = {
   id: PropTypes.string.isRequired,
@@ -224,47 +139,98 @@ class Room extends React.Component {
 
 Room.propTypes = propTypes;
 
-const PAGE_SIZE = 20;
-
 module.exports = compose(
-  connect(state => ({ user: state.user })),
-  graphql(createMessageMutation, { name: 'createMessage' }),
-  realtime(MessagesQuery, SubscriptionQuery, {
+  graphql(gql`
+    mutation (
+      $roomId: ID,
+      $senderName: String!,
+      $senderImage: String,
+      $text: String!
+    ) {
+      createMessage(
+        roomId: $roomId
+        senderName: $senderName
+        senderImage: $senderImage
+        text: $text
+      ) {
+        id
+        senderName
+        senderImage
+        text
+        createdAt
+      }
+    }
+  `, { name: 'createMessage' }),
+  realtime({
+    loadQuery: gql`
+      query MessageQuery ($roomId: ID, $pageSize: Int) {
+        allMessages(
+          first: $pageSize,
+          filter: {
+            room: {
+              id: $roomId
+            }
+          },
+          orderBy: createdAt_DESC
+        ) {
+          id
+          senderName
+          senderImage
+          text
+          createdAt
+        }
+      }
+    `,
+    loadMoreQuery: gql`
+      query MessageQuery ($roomId: ID, $pageSize: Int, $after: String) {
+        allMessages(
+          first: $pageSize,
+          after: $after,
+          filter: {
+            room: {
+              id: $roomId
+            }
+          },
+          orderBy: createdAt_DESC
+        ) {
+          id
+          senderName
+          senderImage
+          text
+          createdAt
+        }
+      }
+    `,
+    subscriptionQuery: gql`
+      subscription newMessages($roomId: ID) {
+        Message(filter: {
+          node: {
+            room: {
+              id: $roomId
+            }
+          },
+          mutation_in: [CREATED]
+        }) {
+          node {
+            id
+            senderName
+            senderImage
+            text
+            createdAt
+          }
+        }
+      }
+    `,
+    pageSize: 20,
     name: 'messages',
     queryName: 'allMessages',
     subscriptionName: 'Message',
-    append: (nodes, newNode) => [{ ...newNode }, ...nodes],
+    mergeSubscription: (nodes, newNode) => [{ ...newNode }, ...nodes],
+    mergeMore: (nodes, older) => [...nodes, ...older],
     options: props => ({
-      variables: { roomId: props.id, pageSize: PAGE_SIZE },
-    }),
-    props: props => ({
-      ...props.ownProps,
-      messages: props.messages,
-      loadMore: oneAtATime((done) => {
-        const { allMessages } = props.messages;
-        props.messages.fetchMore({
-          query: MoreMessagesQuery,
-          variables: {
-            roomId: props.ownProps.id,
-            pageSize: PAGE_SIZE,
-            after: allMessages[allMessages.length - 1].id,
-          },
-          updateQuery: (prev, { fetchMoreResult }) => {
-            done();
-            if (!fetchMoreResult) {
-              return prev;
-            }
-            return {
-              ...prev,
-              allMessages: [
-                ...prev.allMessages,
-                ...fetchMoreResult.allMessages,
-              ],
-            };
-          },
-        });
-      }),
+      variables: { roomId: props.id, pageSize: 20 },
     }),
   }),
+  connect(state => ({ user: state.user })),
   withKeyboardHeight(),
 )(Room);

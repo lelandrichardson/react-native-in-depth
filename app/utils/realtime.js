@@ -1,5 +1,6 @@
 import React from 'react';
 import { graphql } from 'react-apollo';
+import oneAtATime from './oneAtATime';
 
 const getSubscriptionOptions = (options, props) => {
   if (options && options.options) {
@@ -11,8 +12,49 @@ const getSubscriptionOptions = (options, props) => {
   return {};
 };
 
-const realtime = (loadQuery, subscriptionQuery, options) => Component => {
-  const { name, queryName, subscriptionName } = options;
+const realtime = (options) => Component => {
+  const {
+    loadQuery,
+    loadMoreQuery,
+    subscriptionQuery,
+    name,
+    queryName,
+    subscriptionName,
+    pageSize,
+    mergeSubscription,
+    mergeMore,
+    ...rest
+  } = options;
+
+  const finalOptions = {
+    ...rest,
+    props: props => ({
+      ...props.ownProps,
+      [name]: props.data,
+      loadMore: oneAtATime((done) => {
+        const data = props.data[queryName];
+        props.data.fetchMore({
+          query: loadMoreQuery,
+          variables: {
+            roomId: props.ownProps.id, // TODO
+            pageSize,
+            after: data[data.length - 1].id,
+          },
+          updateQuery: (prev, { fetchMoreResult }) => {
+            done();
+            if (!fetchMoreResult) {
+              return prev;
+            }
+            return {
+              ...prev,
+              [queryName]: mergeMore(prev[queryName], fetchMoreResult[queryName]),
+            };
+          },
+        });
+      }),
+    }),
+  };
+
   class Realtime extends React.Component {
     componentWillReceiveProps(nextProps) {
       if (!nextProps[name].loading) {
@@ -35,7 +77,7 @@ const realtime = (loadQuery, subscriptionQuery, options) => Component => {
             const newEntry = subscriptionData.data[subscriptionName].node;
             return {
               ...previousState,
-              [queryName]: options.append(previousState[queryName], newEntry),
+              [queryName]: mergeSubscription(previousState[queryName], newEntry),
             };
           },
           onError: (err) => console.log('subscription error', err),
@@ -49,7 +91,7 @@ const realtime = (loadQuery, subscriptionQuery, options) => Component => {
 
   Realtime.displayName = `Realtime(${Component.displayName || Component.name})`;
 
-  return graphql(loadQuery, options)(Realtime);
+  return graphql(loadQuery, finalOptions)(Realtime);
 };
 
 module.exports = realtime;

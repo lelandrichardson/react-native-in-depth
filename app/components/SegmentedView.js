@@ -146,7 +146,7 @@ class SegmentedView extends React.Component {
       </View>
     );
     return (
-      <View style={[styles.container, style]}>
+      <View style={style}>
         {barPosition === 'top' && barContainer}
         <View style={styles.titleContainer}>
           {items}
@@ -158,9 +158,6 @@ class SegmentedView extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   titleContainer: {
     flexDirection: 'row',
   },

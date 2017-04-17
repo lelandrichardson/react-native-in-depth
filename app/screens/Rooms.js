@@ -10,55 +10,6 @@ import Row from '../components/Row';
 import Loader from '../components/Loader';
 import { SETTINGS, ROOM, ADD_ROOM } from '../routes';
 import realtime from '../utils/realtime';
-import oneAtATime from '../utils/oneAtATime';
-
-const createRoomMutation = gql`
-  mutation ($name: String!) {
-    createRoom(
-      name: $name
-    ) {
-      id
-    }
-  }
-`;
-
-const RoomsQuery = gql`
-  query ($pageSize: Int) {
-    allRooms(
-      first: $pageSize,
-      orderBy: createdAt_DESC
-    ) {
-      id
-      name
-    }
-  }
-`;
-
-const MoreRoomsQuery = gql`
-  query ($pageSize: Int, $after: String) {
-    allRooms(
-      first: $pageSize,
-      after: $after,
-      orderBy: createdAt_DESC
-    ) {
-      id
-      name
-    }
-  }
-`;
-
-const SubscriptionQuery = gql`
-  subscription newRooms {
-    Room(filter: {
-      mutation_in: [CREATED]
-    }) {
-      node {
-        id
-        name
-      }
-    }
-  }
-`;
 
 const propTypes = {
   // provided by apollo
@@ -102,6 +53,7 @@ class Rooms extends React.Component {
             removeClippedSubviews
             onEndReached={loadMore}
             onEndReachedThreshold={500}
+            initialNumToRender={15}
             ListHeaderComponent={() => <Navigator.Spacer />}
             data={allRooms}
             refreshing={loading}
@@ -122,41 +74,57 @@ class Rooms extends React.Component {
 
 Rooms.propTypes = propTypes;
 
-const PAGE_SIZE = 5;
-
 module.exports = compose(
-  realtime(RoomsQuery, SubscriptionQuery, {
+  realtime({
+    loadQuery: gql`
+      query ($pageSize: Int) {
+        allRooms(
+          first: $pageSize,
+          orderBy: createdAt_DESC
+        ) {
+          id
+          name
+        }
+      }
+    `,
+    loadMoreQuery: gql`
+      query ($pageSize: Int, $after: String) {
+        allRooms(
+          first: $pageSize,
+          after: $after,
+          orderBy: createdAt_DESC
+        ) {
+          id
+          name
+        }
+      }
+    `,
+    subscriptionQuery: gql`
+      subscription newRooms {
+        Room(filter: {
+          mutation_in: [CREATED]
+        }) {
+          node {
+            id
+            name
+          }
+        }
+      }
+    `,
+    pageSize: 5,
     name: 'rooms',
     queryName: 'allRooms',
     subscriptionName: 'Room',
-    append: (nodes, newNode) => [...nodes, { ...newNode }],
-    props: props => ({
-      ...props.ownProps,
-      rooms: props.rooms,
-      loadMore: oneAtATime((done) => {
-        const { allRooms } = props.rooms;
-        props.rooms.fetchMore({
-          query: MoreRoomsQuery,
-          variables: {
-            pageSize: PAGE_SIZE,
-            after: allRooms[allRooms.length - 1].id,
-          },
-          updateQuery: (prev, { fetchMoreResult }) => {
-            done();
-            if (!fetchMoreResult) {
-              return prev;
-            }
-            return {
-              ...prev,
-              allRooms: [
-                ...prev.allRooms,
-                ...fetchMoreResult.allRooms,
-              ],
-            };
-          },
-        });
-      }),
-    }),
+    mergeSubscription: (nodes, newNode) => [{ ...newNode }, ...nodes],
+    mergeMore: (nodes, older) => [...nodes, ...older],
   }),
-  graphql(createRoomMutation, { name: 'createRoom' }),
+  graphql(gql`
+    mutation ($name: String!) {
+      createRoom(
+        name: $name
+      ) {
+        id
+      }
+    }
+  `, { name: 'createRoom' }),
 )(Rooms);
