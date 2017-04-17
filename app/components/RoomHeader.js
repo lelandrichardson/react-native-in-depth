@@ -3,9 +3,9 @@ import {
   View,
   Text,
   StyleSheet,
-  ActivityIndicator,
 } from 'react-native';
 import Navigator from 'native-navigation';
+import Loader from './Loader';
 import theme from '../theme';
 
 const propTypes = {
@@ -36,7 +36,7 @@ class RoomHeader extends React.Component {
         <Navigator.Spacer animated />
         <View style={styles.header}>
           {loading && (
-            <ActivityIndicator />
+            <Loader />
           )}
           {!loading && !hasMessages && (
             <Text style={styles.text}>

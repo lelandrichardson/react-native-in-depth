@@ -6,13 +6,13 @@ import {
 } from 'react-native';
 import PlatformTouchableOpacity from './PlatformTouchableOpacity';
 import Avatar from './Avatar';
-
-import theme from '../theme';
+import LiveDate from './LiveDate';
 
 const propTypes = {
   text: PropTypes.string.isRequired,
   senderName: PropTypes.string.isRequired,
   senderImage: PropTypes.string,
+  createdAt: PropTypes.string,
 };
 
 const defaultProps = {
@@ -24,12 +24,11 @@ class Message extends React.Component {
       text,
       senderName,
       senderImage,
+      createdAt,
     } = this.props;
 
-    const date = '4m ago'; // TODO:
-
     return (
-      <View style={[theme.styles.invert, styles.container]}>
+      <View style={styles.container}>
         <Avatar
           name={senderName}
           image={senderImage}
@@ -43,9 +42,7 @@ class Message extends React.Component {
               <Text style={styles.sender}>
                 {senderName}
               </Text>
-              <Text style={styles.date}>
-                {date}
-              </Text>
+              <LiveDate style={styles.date} date={createdAt} />
             </View>
             <View style={styles.textContainer}>
               <Text style={styles.text}>
@@ -67,7 +64,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     paddingHorizontal: 8,
-    marginBottom: 8,
+    marginTop: 8,
   },
   bubble: {
     flex: 1,

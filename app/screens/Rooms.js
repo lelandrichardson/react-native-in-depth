@@ -1,12 +1,12 @@
 import React, { PropTypes } from 'react';
 import {
-  Text,
   Platform,
 } from 'react-native';
 import Navigator from 'native-navigation';
 import { compose, gql, graphql } from 'react-apollo';
 import ScrollScreen from '../components/ScrollScreen';
 import Row from '../components/Row';
+import Loader from '../components/Loader';
 import { SETTINGS, ROOM, ADD_ROOM } from '../routes';
 import realtime from '../utils/realtime';
 
@@ -77,7 +77,7 @@ class Rooms extends React.Component {
         rightButtons={BUTTONS}
         onRightPress={(i) => BUTTONS[i].onPress()}
       >
-        {rooms.loading && <Text>Loading...</Text>}
+        {rooms.loading && <Loader />}
         {!rooms.loading && rooms.allRooms.map(room => (
           <Row
             key={room.id}

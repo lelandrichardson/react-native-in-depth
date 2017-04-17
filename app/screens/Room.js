@@ -13,9 +13,10 @@ import Message from '../components/Message';
 import RoomHeader from '../components/RoomHeader';
 import MessageInput from '../components/MessageInput';
 import withKeyboardHeight from '../components/withKeyboardHeight';
+import Invert from '../components/Invert';
+import Loader from '../components/Loader';
 import realtime from '../utils/realtime';
 import { SETTINGS } from '../routes';
-import theme from '../theme';
 
 const createMessageMutation = gql`
   mutation (
@@ -31,12 +32,16 @@ const createMessageMutation = gql`
       text: $text
     ) {
       id
+      senderName
+      senderImage
+      text
+      createdAt
     }
   }
 `;
 
 const MessagesQuery = gql`
-  query ($roomId: ID) {
+  query MessageQuery ($roomId: ID) {
     allMessages(
       filter: {
         room: {
@@ -89,6 +94,7 @@ const propTypes = {
   messages: PropTypes.shape({
     loading: PropTypes.bool.isRequired,
     allMessages: PropTypes.array,
+    error: PropTypes.any,
   }).isRequired,
   createMessage: PropTypes.func.isRequired,
 };
@@ -103,13 +109,38 @@ class Room extends React.Component {
     if (!message || !message.trim()) {
       return;
     }
+    const now = (new Date()).toISOString();
     const variables = {
       roomId: id,
       senderName: user.name,
       senderImage: user.image,
       text: message,
     };
-    createMessage({ variables });
+    const optimisticResponse = {
+      __typename: 'Mutation',
+      createMessage: {
+        __typename: 'Message',
+        id: null,
+        senderName: user.name,
+        senderImage: user.image,
+        text: message,
+        createdAt: now,
+      },
+    };
+    const updateQueries = {
+      MessageQuery: (messages, { mutationResult }) => {
+        const sent = mutationResult.data.createMessage;
+        return {
+          ...messages,
+          allMessages: [
+            { ...sent },
+            ...messages.allMessages.filter(m => m.id !== sent.id),
+          ],
+        };
+      },
+    };
+
+    createMessage({ variables, optimisticResponse, updateQueries });
       // .then(({ data: { createMessage: message }}) => this.setState({ messageId: message.id }));
   }
   componentWillReceiveProps(nextProps) {
@@ -121,29 +152,38 @@ class Room extends React.Component {
   }
   render() {
     const { messages, title, user } = this.props;
-    const { allMessages, loading } = messages;
+    const { allMessages, loading, refetch } = messages;
+
+    const content = loading ? (
+      <Loader />
+    ) : (
+      <Invert style={{ flex: 1 }}>
+        <FlatList
+          style={{ paddingTop: 8 }}
+          removeClippedSubviews
+          ListFooterComponent={() => (
+            <RoomHeader
+              title={title}
+              loading={loading}
+              messages={allMessages}
+            />
+          )}
+          data={allMessages}
+          refreshing={loading}
+          keyExtractor={item => item.id}
+          renderItem={({ item }) => <Invert><Message {...item} /></Invert>}
+        />
+      </Invert>
+    );
 
     return (
-      <Screen title={title}>
+      <Screen
+        title={title}
+        rightImage={require('../icons/add.png')}
+        onRightPress={refetch}
+      >
         <View style={StyleSheet.absoluteFill}>
-          <View
-            style={[theme.styles.invert, { flex: 1 }]}
-          >
-            <FlatList
-              style={{ paddingTop: 8 }}
-              ListFooterComponent={() => (
-                <RoomHeader
-                  title={title}
-                  loading={loading}
-                  messages={allMessages}
-                />
-              )}
-              data={allMessages}
-              refreshing={loading}
-              keyExtractor={item => item.id}
-              renderItem={({ item }) => <Message {...item} />}
-            />
-          </View>
+          {content}
           <MessageInput
             senderName={user.name}
             senderImage={user.image}
@@ -158,9 +198,10 @@ class Room extends React.Component {
 
 Room.propTypes = propTypes;
 
-// TODO: pagination / infinite load / optimistic updates
+// TODO: pagination / infinite load
 module.exports = compose(
   connect(state => ({ user: state.user })),
+  graphql(createMessageMutation, { name: 'createMessage' }),
   realtime(MessagesQuery, SubscriptionQuery, {
     name: 'messages',
     queryName: 'allMessages',
@@ -170,6 +211,5 @@ module.exports = compose(
       variables: { roomId: props.id },
     }),
   }),
-  graphql(createMessageMutation, { name: 'createMessage' }),
   withKeyboardHeight(),
 )(Room);

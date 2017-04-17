@@ -28,7 +28,6 @@ const MAX_INPUT_HEIGHT = 89;
 
 function getHeightFromContentHeight(contentHeight) {
   const height = contentHeight + 3.5;
-
   if (height > MAX_INPUT_HEIGHT) return MAX_INPUT_HEIGHT;
   if (height < MIN_INPUT_HEIGHT) return MIN_INPUT_HEIGHT;
   return height;

@@ -9,7 +9,7 @@ import theme from '../theme';
 
 const propTypes = {
   label: PropTypes.string.isRequired,
-  value: PropTypes.any.isRequired,
+  value: PropTypes.any,
   onChange: PropTypes.func,
 };
 
