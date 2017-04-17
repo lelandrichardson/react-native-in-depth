@@ -4,11 +4,13 @@ import {
 } from 'react-native';
 import Navigator from 'native-navigation';
 import { compose, gql, graphql } from 'react-apollo';
-import ScrollScreen from '../components/ScrollScreen';
+import FlatList from 'react-native-flat-list';
+import Screen from '../components/Screen';
 import Row from '../components/Row';
 import Loader from '../components/Loader';
 import { SETTINGS, ROOM, ADD_ROOM } from '../routes';
 import realtime from '../utils/realtime';
+import oneAtATime from '../utils/oneAtATime';
 
 const createRoomMutation = gql`
   mutation ($name: String!) {
@@ -21,8 +23,22 @@ const createRoomMutation = gql`
 `;
 
 const RoomsQuery = gql`
-  query {
+  query ($pageSize: Int) {
     allRooms(
+      first: $pageSize,
+      orderBy: createdAt_DESC
+    ) {
+      id
+      name
+    }
+  }
+`;
+
+const MoreRoomsQuery = gql`
+  query ($pageSize: Int, $after: String) {
+    allRooms(
+      first: $pageSize,
+      after: $after,
       orderBy: createdAt_DESC
     ) {
       id
@@ -50,6 +66,7 @@ const propTypes = {
     loading: PropTypes.bool.isRequired,
     allRooms: PropTypes.array,
   }).isRequired,
+  loadMore: PropTypes.func.isRequired,
   createRoom: PropTypes.func.isRequired,
 };
 
@@ -70,27 +87,42 @@ const BUTTONS = [
 
 class Rooms extends React.Component {
   render() {
-    const { rooms } = this.props;
+    const { rooms, loadMore } = this.props;
+    const { loading, allRooms } = rooms;
     return (
-      <ScrollScreen
+      <Screen
         title="Rooms"
         rightButtons={BUTTONS}
         onRightPress={(i) => BUTTONS[i].onPress()}
       >
-        {rooms.loading && <Loader />}
-        {!rooms.loading && rooms.allRooms.map(room => (
-          <Row
-            key={room.id}
-            title={room.name}
-            onPress={() => Navigator.push(ROOM, { id: room.id, title: room.name })}
+        {loading ? (
+          <Loader />
+        ) : (
+          <FlatList
+            removeClippedSubviews
+            onEndReached={loadMore}
+            onEndReachedThreshold={500}
+            ListHeaderComponent={() => <Navigator.Spacer />}
+            data={allRooms}
+            refreshing={loading}
+            keyExtractor={item => item.id}
+            renderItem={({ item }) => (
+              <Row
+                key={item.id}
+                title={item.name}
+                onPress={() => Navigator.push(ROOM, { id: item.id, title: item.name })}
+              />
+            )}
           />
-        ))}
-      </ScrollScreen>
+        )}
+      </Screen>
     );
   }
 }
 
 Rooms.propTypes = propTypes;
+
+const PAGE_SIZE = 5;
 
 module.exports = compose(
   realtime(RoomsQuery, SubscriptionQuery, {
@@ -98,6 +130,33 @@ module.exports = compose(
     queryName: 'allRooms',
     subscriptionName: 'Room',
     append: (nodes, newNode) => [...nodes, { ...newNode }],
+    props: props => ({
+      ...props.ownProps,
+      rooms: props.rooms,
+      loadMore: oneAtATime((done) => {
+        const { allRooms } = props.rooms;
+        props.rooms.fetchMore({
+          query: MoreRoomsQuery,
+          variables: {
+            pageSize: PAGE_SIZE,
+            after: allRooms[allRooms.length - 1].id,
+          },
+          updateQuery: (prev, { fetchMoreResult }) => {
+            done();
+            if (!fetchMoreResult) {
+              return prev;
+            }
+            return {
+              ...prev,
+              allRooms: [
+                ...prev.allRooms,
+                ...fetchMoreResult.allRooms,
+              ],
+            };
+          },
+        });
+      }),
+    }),
   }),
   graphql(createRoomMutation, { name: 'createRoom' }),
 )(Rooms);

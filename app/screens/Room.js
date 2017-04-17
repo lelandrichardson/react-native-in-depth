@@ -16,6 +16,7 @@ import withKeyboardHeight from '../components/withKeyboardHeight';
 import Invert from '../components/Invert';
 import Loader from '../components/Loader';
 import realtime from '../utils/realtime';
+import oneAtATime from '../utils/oneAtATime';
 import { SETTINGS } from '../routes';
 
 const createMessageMutation = gql`
@@ -41,8 +42,30 @@ const createMessageMutation = gql`
 `;
 
 const MessagesQuery = gql`
-  query MessageQuery ($roomId: ID) {
+  query MessageQuery ($roomId: ID, $pageSize: Int) {
     allMessages(
+      first: $pageSize,
+      filter: {
+        room: {
+          id: $roomId
+        }
+      },
+      orderBy: createdAt_DESC
+    ) {
+      id
+      senderName
+      senderImage
+      text
+      createdAt
+    }
+  }
+`;
+
+const MoreMessagesQuery = gql`
+  query MessageQuery ($roomId: ID, $pageSize: Int, $after: String) {
+    allMessages(
+      first: $pageSize,
+      after: $after,
       filter: {
         room: {
           id: $roomId
@@ -96,6 +119,7 @@ const propTypes = {
     allMessages: PropTypes.array,
     error: PropTypes.any,
   }).isRequired,
+  loadMore: PropTypes.func.isRequired,
   createMessage: PropTypes.func.isRequired,
 };
 
@@ -151,7 +175,7 @@ class Room extends React.Component {
     }
   }
   render() {
-    const { messages, title, user } = this.props;
+    const { messages, title, user, loadMore } = this.props;
     const { allMessages, loading, refetch } = messages;
 
     const content = loading ? (
@@ -161,6 +185,8 @@ class Room extends React.Component {
         <FlatList
           style={{ paddingTop: 8 }}
           removeClippedSubviews
+          onEndReached={loadMore}
+          onEndReachedThreshold={500}
           ListFooterComponent={() => (
             <RoomHeader
               title={title}
@@ -179,7 +205,7 @@ class Room extends React.Component {
     return (
       <Screen
         title={title}
-        rightImage={require('../icons/add.png')}
+        rightImage={require('../icons/refresh.png')}
         onRightPress={refetch}
       >
         <View style={StyleSheet.absoluteFill}>
@@ -198,7 +224,8 @@ class Room extends React.Component {
 
 Room.propTypes = propTypes;
 
-// TODO: pagination / infinite load
+const PAGE_SIZE = 20;
+
 module.exports = compose(
   connect(state => ({ user: state.user })),
   graphql(createMessageMutation, { name: 'createMessage' }),
@@ -208,7 +235,35 @@ module.exports = compose(
     subscriptionName: 'Message',
     append: (nodes, newNode) => [{ ...newNode }, ...nodes],
     options: props => ({
-      variables: { roomId: props.id },
+      variables: { roomId: props.id, pageSize: PAGE_SIZE },
+    }),
+    props: props => ({
+      ...props.ownProps,
+      messages: props.messages,
+      loadMore: oneAtATime((done) => {
+        const { allMessages } = props.messages;
+        props.messages.fetchMore({
+          query: MoreMessagesQuery,
+          variables: {
+            roomId: props.ownProps.id,
+            pageSize: PAGE_SIZE,
+            after: allMessages[allMessages.length - 1].id,
+          },
+          updateQuery: (prev, { fetchMoreResult }) => {
+            done();
+            if (!fetchMoreResult) {
+              return prev;
+            }
+            return {
+              ...prev,
+              allMessages: [
+                ...prev.allMessages,
+                ...fetchMoreResult.allMessages,
+              ],
+            };
+          },
+        });
+      }),
     }),
   }),
   withKeyboardHeight(),
