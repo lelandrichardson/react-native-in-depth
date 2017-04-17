@@ -10,6 +10,7 @@ const color = {
   darkText: '#484848',
   image: '#484848',
   lightGray: '#f7f7f7',
+  accent: '#44B7E1',
 };
 
 const font = {
@@ -43,6 +44,7 @@ const styles = StyleSheet.create({
 });
 
 module.exports = {
+  bp: 8,
   size,
   font,
   color,

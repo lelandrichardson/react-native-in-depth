@@ -10,6 +10,7 @@ import ScrollScreen from '../components/ScrollScreen';
 import Avatar from '../components/Avatar';
 import LabeledInput from '../components/LabeledInput';
 import SegmentedView from '../components/SegmentedView';
+import PillButton from '../components/PillButton';
 import gravatarUrl from '../utils/gravatarUrl';
 
 const propTypes = {
@@ -101,14 +102,16 @@ class Settings extends React.Component {
           />
         )}
         {dirty && (
-          <View>
-            <Button
-              title="Save"
-              onPress={this.save}
-            />
-            <Button
+          <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+            <PillButton
               title="Clear"
               onPress={this.clear}
+              color="#888888"
+            />
+            <PillButton
+              title="Save"
+              onPress={this.save}
+              color="#44B7E1"
             />
           </View>
         )}
