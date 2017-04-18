@@ -1,6 +1,6 @@
 {
   "name": "native-navigation",
-  "version": "0.1.0",
+  "version": "0.2.1",
   "summary": "React Native Mapview component for iOS + Android",
   "authors": {
     "intelligibabble": "leland.m.richardson@gmail.com"
@@ -13,7 +13,7 @@
   "module_name": "NativeNavigation",
   "source": {
     "git": "https://github.com/airbnb/native-navigation.git",
-    "tag": "v0.1.0"
+    "tag": "v0.2.1"
   },
   "source_files": "lib/ios/native-navigation/*.{h,m,swift}",
   "dependencies": {

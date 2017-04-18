@@ -1,5 +1,5 @@
 PODS:
-  - native-navigation (0.1.0):
+  - native-navigation (0.2.1):
     - React
   - React (0.42.3):
     - React/Core (= 0.42.3)
@@ -41,10 +41,10 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga/Yoga.podspec"
 
 SPEC CHECKSUMS:
-  native-navigation: 23b0ef13de8bd9aaa4dbaa115e9b7055e6844987
+  native-navigation: 0bc771c8a427dfb0d31eb9707dde48e9fbac42fa
   React: 35e039680feacd0563677d49ba410112d2748559
   Yoga: 86ce777665c8259b94ef8dbea76b84634237f4ea
 
-PODFILE CHECKSUM: f8c09723173298b82ceca82f9c99676a9cbf6b83
+PODFILE CHECKSUM: f86f30fe7d9e3250ca82e4b07c847ad69bb4b032
 
 COCOAPODS: 1.2.0
