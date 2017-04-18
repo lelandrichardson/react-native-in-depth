@@ -4,9 +4,6 @@ import {
   Text,
   StyleSheet,
 } from 'react-native';
-import PlatformTouchableOpacity from './PlatformTouchableOpacity';
-import Avatar from './Avatar';
-import LiveDate from './LiveDate';
 
 const propTypes = {
   text: PropTypes.string.isRequired,
@@ -27,30 +24,16 @@ class Message extends React.Component {
       createdAt,
     } = this.props;
 
+    // Exercise:
+    // 1. use `senderName` and `senderImage` with the `<Avatar />` component to render user's image
+    // 2. give the user's name and message different font styles
+    // 3. try rendering the date with `createdAt`. You can use JS's built in date formatting, or try
+    //    the `<LiveDate />` component.
+    // 4. How would you make thi component touchable?  what about long presses?
+
     return (
       <View style={styles.container}>
-        <Avatar
-          name={senderName}
-          image={senderImage}
-        />
-        <PlatformTouchableOpacity
-          style={{ flex: 1 }}
-          onPress={() => console.log('press')}
-        >
-          <View style={styles.bubble}>
-            <View style={styles.topContainer}>
-              <Text style={styles.sender}>
-                {senderName}
-              </Text>
-              <LiveDate style={styles.date} date={createdAt} />
-            </View>
-            <View style={styles.textContainer}>
-              <Text style={styles.text}>
-                {text}
-              </Text>
-            </View>
-          </View>
-        </PlatformTouchableOpacity>
+
       </View>
     );
   }
@@ -60,35 +43,7 @@ Message.defaultProps = defaultProps;
 Message.propTypes = propTypes;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: 'row',
-    paddingHorizontal: 8,
-    marginTop: 8,
-  },
-  bubble: {
-    flex: 1,
-    marginLeft: 8,
-  },
-  topContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 2,
-  },
-  sender: {
-    fontWeight: 'bold',
-  },
-  date: {
-    fontSize: 12,
-    fontWeight: '200',
-    color: '#aaa',
-  },
-  textContainer: {
 
-  },
-  text: {
-
-  },
 });
 
 export default Message;

@@ -2,18 +2,14 @@ import React, { PropTypes } from 'react';
 import {
   StyleSheet,
   View,
-  LayoutAnimation,
+  Text,
+  ScrollView,
 } from 'react-native';
-import FlatList from 'react-native-flat-list';
 import Navigator from 'native-navigation';
 import { compose, graphql } from 'react-apollo';
 import { connect } from 'react-redux';
 import Screen from '../components/Screen';
-import Message from '../components/Message';
-import RoomHeader from '../components/RoomHeader';
 import MessageInput from '../components/MessageInput';
-import withKeyboardHeight from '../components/withKeyboardHeight';
-import Invert from '../components/Invert';
 import Loader from '../components/Loader';
 import realtime from '../utils/realtime';
 import {
@@ -86,52 +82,38 @@ class Room extends React.Component {
       },
     };
 
+    // create the message, and optimistically update the UI
     createMessage({ variables, optimisticResponse, updateQueries });
-      // .then(({ data: { createMessage: message }}) => this.setState({ messageId: message.id }));
-  }
-  componentWillReceiveProps(nextProps) {
-    const a = nextProps.messages.allMessages;
-    const b = this.props.messages.allMessages;
-    if (a && b && a[0] !== b[0]) {
-      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    }
   }
   render() {
     const { messages, title, user, loadMore } = this.props;
     const { allMessages, loading, refetch } = messages;
 
-    const content = loading ? (
-      <Loader />
-    ) : (
-      <Invert style={{ flex: 1 }}>
-        <FlatList
-          style={{ paddingTop: 8 }}
-          removeClippedSubviews
-          onEndReached={loadMore}
-          onEndReachedThreshold={500}
-          ListFooterComponent={() => (
-            <RoomHeader
-              title={title}
-              loading={loading}
-              messages={allMessages}
-            />
-          )}
-          data={allMessages}
-          refreshing={loading}
-          keyExtractor={item => item.id}
-          renderItem={({ item }) => <Invert><Message {...item} /></Invert>}
-        />
-      </Invert>
-    );
+    // Exercises:
+    // 1. Pass in the name of the room from the `Rooms` screen and use it to render a title in the
+    //    Navigation bar
+    // 2. Make a `<Message />` component that looks good!
+    // 3. How to make the messages hug the bottom? Check out 'react-native-invertible-scroll-view'!
+    // 4. Add a button to refresh the UI using `refetch`
 
     return (
-      <Screen
-        title={title}
-        rightImage={require('../icons/refresh.png')}
-        onRightPress={refetch}
-      >
+      <Screen>
         <View style={StyleSheet.absoluteFill}>
-          {content}
+          <ScrollView>
+            <Navigator.Spacer />
+            {loading ? (
+              <Loader />
+            ) : (
+              allMessages.map(m => (
+                <View key={m.id}>
+                  <Text style={{ fontWeight: 'bold', marginTop: 8 }}>
+                    {m.senderName}
+                  </Text>
+                  <Text>{m.text}</Text>
+                </View>
+              ))
+            )}
+          </ScrollView>
           <MessageInput
             senderName={user.name}
             senderImage={user.image}
@@ -163,5 +145,4 @@ module.exports = compose(
     }),
   }),
   connect(state => ({ user: state.user })),
-  withKeyboardHeight(),
 )(Room);

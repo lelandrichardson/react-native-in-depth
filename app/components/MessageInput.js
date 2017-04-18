@@ -3,10 +3,8 @@ import {
   View,
   StyleSheet,
   TextInput,
-  LayoutAnimation,
   Image,
 } from 'react-native';
-import Avatar from './Avatar';
 import PlatformTouchableOpacity from './PlatformTouchableOpacity';
 
 const propTypes = {
@@ -45,17 +43,11 @@ class MessageInput extends React.Component {
     this.onChange = this.onChange.bind(this);
     this.onChangeText = this.onChangeText.bind(this);
   }
-  componentWillUpdate(nextProps, nextState) {
-    if (!!nextState.text !== !!this.state.text) {
-      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    }
-  }
   onChange(e) {
     const inputHeight = getHeightFromContentHeight(e.nativeEvent.contentSize.height);
-    if (this.state.inputHeight !== inputHeight) {
-      LayoutAnimation.configureNext({ ...LayoutAnimation.Presets.easeInEaseOut, duration: 100 });
-      this.setState({ inputHeight });
-    }
+
+    // Exercise
+    // We now have the input height. What can we do with this?
   }
   onChangeText(text) {
     this.setState({ text });
@@ -67,16 +59,18 @@ class MessageInput extends React.Component {
   render() {
     const { inputHeight, text } = this.state;
     const { senderName, senderImage, placeholder, onAvatarPress } = this.props;
-    const showSend = !!text;
+
+    // Exercise
+    // 1. Try hiding the send button when there is no text for a cleaner look
+    // 2. Try adding the user's avatar next to the text input for a more uniform look with the
+    //    message components above it
+    // 3. Give the message input a different beckground color and maybe a top border to separate it
+    //    from the rest of the UI better.
+    // 4. How would you make the text input grow as the text inside of it grows? Hint: look at the
+    //    `onChange` handler in this file
+
     return (
       <View style={styles.container}>
-        <View style={styles.avatarContainer}>
-          <Avatar
-            name={senderName}
-            image={senderImage}
-            onPress={onAvatarPress}
-          />
-        </View>
         <View style={styles.inputContainer}>
           <TextInput
             style={[styles.textInput, { height: inputHeight }]}
@@ -93,7 +87,7 @@ class MessageInput extends React.Component {
         <View
           style={[
             styles.buttonContainer,
-            { marginRight: showSend ? -BUTTON_PADDING : -BUTTON_WIDTH },
+            { marginRight: -BUTTON_PADDING },
           ]}
         >
           <PlatformTouchableOpacity
@@ -112,28 +106,15 @@ class MessageInput extends React.Component {
 MessageInput.defaultProps = defaultProps;
 MessageInput.propTypes = propTypes;
 
-const OUTER_PADDING = 8;
-
 const BUTTON_PADDING = 8;
 const BUTTON_WIDTH = 36 + (2 * BUTTON_PADDING);
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#f7f7f7',
     flex: 0,
-    borderTopWidth: 1,
-    borderTopColor: '#dedede',
     flexDirection: 'row',
-    padding: OUTER_PADDING,
-  },
-  avatarContainer: {
-    marginRight: OUTER_PADDING,
   },
   textInput: {
-    backgroundColor: '#ffffff',
-    borderColor: '#dedede',
-    borderWidth: 1,
-    borderRadius: 3,
     fontSize: 16,
     paddingHorizontal: 8,
     paddingVertical: 4,
@@ -143,7 +124,6 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     width: BUTTON_WIDTH,
-    paddingHorizontal: BUTTON_PADDING,
     alignSelf: 'flex-end',
   },
 });
