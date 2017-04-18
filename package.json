@@ -5,7 +5,7 @@
   "scripts": {
     "rmbabelrc": "(find node_modules -type f -name .babelrc | grep -v /react-native/ | xargs rm) || true",
     "podinstall": "cd ios; pod install; cd -;",
-    "postinstall": "npm run --silent podinstall && npm run --silent rmbabelrc",
+    "postinstall": "npm run --silent rmbabelrc",
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "lint": "eslint --ignore-path=.eslintignore .",
     "test": "jest"
