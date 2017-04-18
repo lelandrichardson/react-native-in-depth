@@ -54,6 +54,11 @@ react-native run-android
 ```
 
 
+## Debugging
+
+Open the React Native Debugger with `CMD + d` in the iOS emulator or `CMD + m` in the Android emulator.
+
+
 
 ## Additional Links
 
