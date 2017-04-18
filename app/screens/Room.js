@@ -6,7 +6,7 @@ import {
 } from 'react-native';
 import FlatList from 'react-native-flat-list';
 import Navigator from 'native-navigation';
-import { compose, gql, graphql } from 'react-apollo';
+import { compose, graphql } from 'react-apollo';
 import { connect } from 'react-redux';
 import Screen from '../components/Screen';
 import Message from '../components/Message';
@@ -16,6 +16,13 @@ import withKeyboardHeight from '../components/withKeyboardHeight';
 import Invert from '../components/Invert';
 import Loader from '../components/Loader';
 import realtime from '../utils/realtime';
+import {
+  fetchMessagesQuery,
+  fetchMoreMessagesQuery,
+  newMessagesSubscription,
+  createMessageMutation,
+} from '../queries';
+
 import { SETTINGS } from '../routes';
 
 const propTypes = {
@@ -140,87 +147,11 @@ class Room extends React.Component {
 Room.propTypes = propTypes;
 
 module.exports = compose(
-  graphql(gql`
-    mutation (
-      $roomId: ID,
-      $senderName: String!,
-      $senderImage: String,
-      $text: String!
-    ) {
-      createMessage(
-        roomId: $roomId
-        senderName: $senderName
-        senderImage: $senderImage
-        text: $text
-      ) {
-        id
-        senderName
-        senderImage
-        text
-        createdAt
-      }
-    }
-  `, { name: 'createMessage' }),
+  graphql(createMessageMutation, { name: 'createMessage' }),
   realtime({
-    loadQuery: gql`
-      query MessageQuery ($roomId: ID, $pageSize: Int) {
-        allMessages(
-          first: $pageSize,
-          filter: {
-            room: {
-              id: $roomId
-            }
-          },
-          orderBy: createdAt_DESC
-        ) {
-          id
-          senderName
-          senderImage
-          text
-          createdAt
-        }
-      }
-    `,
-    loadMoreQuery: gql`
-      query MessageQuery ($roomId: ID, $pageSize: Int, $after: String) {
-        allMessages(
-          first: $pageSize,
-          after: $after,
-          filter: {
-            room: {
-              id: $roomId
-            }
-          },
-          orderBy: createdAt_DESC
-        ) {
-          id
-          senderName
-          senderImage
-          text
-          createdAt
-        }
-      }
-    `,
-    subscriptionQuery: gql`
-      subscription newMessages($roomId: ID) {
-        Message(filter: {
-          node: {
-            room: {
-              id: $roomId
-            }
-          },
-          mutation_in: [CREATED]
-        }) {
-          node {
-            id
-            senderName
-            senderImage
-            text
-            createdAt
-          }
-        }
-      }
-    `,
+    loadQuery: fetchMessagesQuery,
+    loadMoreQuery: fetchMoreMessagesQuery,
+    subscriptionQuery: newMessagesSubscription,
     pageSize: 20,
     name: 'messages',
     queryName: 'allMessages',

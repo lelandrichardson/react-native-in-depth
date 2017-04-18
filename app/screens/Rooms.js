@@ -3,12 +3,18 @@ import {
   Platform,
 } from 'react-native';
 import Navigator from 'native-navigation';
-import { compose, gql, graphql } from 'react-apollo';
+import { compose, graphql } from 'react-apollo';
 import FlatList from 'react-native-flat-list';
 import Screen from '../components/Screen';
 import Row from '../components/Row';
 import Loader from '../components/Loader';
 import { SETTINGS, ROOM, ADD_ROOM } from '../routes';
+import {
+  fetchRoomsQuery,
+  fetchMoreRoomsQuery,
+  newRoomsSubscription,
+  createRoomMutation,
+} from '../queries';
 import realtime from '../utils/realtime';
 
 const propTypes = {
@@ -76,41 +82,9 @@ Rooms.propTypes = propTypes;
 
 module.exports = compose(
   realtime({
-    loadQuery: gql`
-      query ($pageSize: Int) {
-        allRooms(
-          first: $pageSize,
-          orderBy: createdAt_DESC
-        ) {
-          id
-          name
-        }
-      }
-    `,
-    loadMoreQuery: gql`
-      query ($pageSize: Int, $after: String) {
-        allRooms(
-          first: $pageSize,
-          after: $after,
-          orderBy: createdAt_DESC
-        ) {
-          id
-          name
-        }
-      }
-    `,
-    subscriptionQuery: gql`
-      subscription newRooms {
-        Room(filter: {
-          mutation_in: [CREATED]
-        }) {
-          node {
-            id
-            name
-          }
-        }
-      }
-    `,
+    loadQuery: fetchRoomsQuery,
+    loadMoreQuery: fetchMoreRoomsQuery,
+    subscriptionQuery: newRoomsSubscription,
     pageSize: 5,
     name: 'rooms',
     queryName: 'allRooms',
@@ -118,13 +92,5 @@ module.exports = compose(
     mergeSubscription: (nodes, newNode) => [{ ...newNode }, ...nodes],
     mergeMore: (nodes, older) => [...nodes, ...older],
   }),
-  graphql(gql`
-    mutation ($name: String!) {
-      createRoom(
-        name: $name
-      ) {
-        id
-      }
-    }
-  `, { name: 'createRoom' }),
+  graphql(createRoomMutation, { name: 'createRoom' }),
 )(Rooms);

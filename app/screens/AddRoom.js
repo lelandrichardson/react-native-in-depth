@@ -9,18 +9,7 @@ import { connect } from 'react-redux';
 import ScrollScreen from '../components/ScrollScreen';
 import LabeledInput from '../components/LabeledInput';
 import { ROOM } from '../routes';
-
-const createRoomMutation = gql`
-  mutation (
-    $name: String!,
-  ) {
-    createRoom(
-      name: $name
-    ) {
-      id
-    }
-  }
-`;
+import { createRoomMutation } from '../queries';
 
 function isValidName(name) {
   return !!name && name.length > 4;
