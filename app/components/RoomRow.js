@@ -5,7 +5,6 @@ import {
   Image,
   StyleSheet,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import BaseRow from './BaseRow';
 import LiveDate from './LiveDate';
@@ -15,13 +14,10 @@ const propTypes = {
   title: PropTypes.string.isRequired,
   lastViewed: PropTypes.number,
   subtitle: PropTypes.string,
-  favorited: PropTypes.bool,
   onPress: PropTypes.func,
-  onFavoritePress: PropTypes.func,
 };
 
 const defaultProps = {
-  favorited: false,
 };
 
 class RoomRow extends React.Component {
@@ -30,22 +26,13 @@ class RoomRow extends React.Component {
       title,
       subtitle,
       lastViewed,
-      favorited,
       onPress,
-      onFavoritePress,
     } = this.props;
 
     return (
       <BaseRow onPress={onPress}>
         <View style={styles.content}>
           <View style={styles.titleContainer}>
-            <Text onPress={onFavoritePress} style={styles.star}>
-              <Icon
-                name={favorited ? 'star' : 'star-border'}
-                size={24}
-                color={favorited ? '#F37922' : '#dedede'}
-              />
-            </Text>
             <View>
               <Text style={styles.title}>
                 {title}
@@ -98,9 +85,6 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginTop: 0.4 * 8,
-  },
-  star: {
-    marginRight: 16,
   },
 });
 

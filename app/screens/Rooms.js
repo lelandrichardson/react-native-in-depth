@@ -5,8 +5,6 @@ import {
 } from 'react-native';
 import Navigator from 'native-navigation';
 import { compose } from 'react-apollo';
-import { connect } from 'react-redux';
-import { createSelector } from 'reselect';
 import Screen from '../components/Screen';
 import RoomRow from '../components/RoomRow';
 import Loader from '../components/Loader';
@@ -19,10 +17,6 @@ import {
 import realtime from '../utils/realtime';
 
 const propTypes = {
-  // provided by redux
-  favorite: PropTypes.func.isRequired,
-  decoratedRooms: PropTypes.array,
-
   // provided by apollo
   rooms: PropTypes.shape({
     loading: PropTypes.bool.isRequired,
@@ -48,7 +42,7 @@ const BUTTONS = [
 
 class Rooms extends React.Component {
   render() {
-    const { decoratedRooms, rooms, loadMore, favorite } = this.props;
+    const { rooms, loadMore } = this.props;
     const { loading, allRooms } = rooms;
     return (
       <Screen
@@ -61,12 +55,10 @@ class Rooms extends React.Component {
           {loading ? (
             <Loader />
           ) : (
-            decoratedRooms.map(r => (
+            allRooms.map(r => (
               <RoomRow
                 key={r.id}
                 title={r.name}
-                favorited={r.isFavorited}
-                onFavoritePress={() => favorite(r.id)}
                 onPress={() => Navigator.push(ROOM, { id: r.id, title: r.name })}
               />
             ))
@@ -86,19 +78,6 @@ Rooms.propTypes = propTypes;
 // favorited.
 // Hint: the solution for this looks a lot like the code for the `isFavorited` solution.
 
-const decoratedRooms = createSelector(
-  (state) => state.roomFavorites,
-  (state, props) => props.rooms.allRooms,
-  (favorites, allRooms) => {
-    if (!allRooms || allRooms.length === 0) return [];
-    return allRooms.map(room => ({
-      ...room,
-      isFavorited: favorites.get(room.id, false),
-    }))
-    .sort((a, b) => b.isFavorited - a.isFavorited);
-  }
-);
-
 module.exports = compose(
   realtime({
     loadQuery: fetchRoomsQuery,
@@ -111,8 +90,4 @@ module.exports = compose(
     mergeSubscription: (nodes, newNode) => [{ ...newNode }, ...nodes],
     mergeMore: (nodes, older) => [...nodes, ...older],
   }),
-  connect(
-    (state, props) => ({ decoratedRooms: decoratedRooms(state, props) }),
-    (dispatch) => ({ favorite: id => dispatch({ type: 'ROOM_FAVORITE_TOGGLED', payload: id }) }),
-  ),
 )(Rooms);

@@ -103,7 +103,7 @@ class Room extends React.Component {
     return (
       <Screen>
         <View style={StyleSheet.absoluteFill}>
-          <InvertibleScrollView inverted>
+          <InvertibleScrollView style={{ paddingTop: 8 }} inverted>
             {loading ? (
               <Loader />
             ) : (
