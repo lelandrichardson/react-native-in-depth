@@ -20,6 +20,8 @@ PODS:
     - React/Core
   - React/RCTWebSocket (0.42.3):
     - React/Core
+  - RNVectorIcons (4.0.1):
+    - React
   - Yoga (0.42.3.React)
 
 DEPENDENCIES:
@@ -30,6 +32,7 @@ DEPENDENCIES:
   - React/RCTNetwork (from `../node_modules/react-native`)
   - React/RCTText (from `../node_modules/react-native`)
   - React/RCTWebSocket (from `../node_modules/react-native`)
+  - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga/Yoga.podspec`)
 
 EXTERNAL SOURCES:
@@ -37,14 +40,17 @@ EXTERNAL SOURCES:
     :path: "../node_modules/native-navigation"
   React:
     :path: "../node_modules/react-native"
+  RNVectorIcons:
+    :path: "../node_modules/react-native-vector-icons"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga/Yoga.podspec"
 
 SPEC CHECKSUMS:
   native-navigation: 0bc771c8a427dfb0d31eb9707dde48e9fbac42fa
   React: 35e039680feacd0563677d49ba410112d2748559
+  RNVectorIcons: df0ada1195e3b7c47351897c00f55fd9b8c7aa84
   Yoga: 86ce777665c8259b94ef8dbea76b84634237f4ea
 
-PODFILE CHECKSUM: f86f30fe7d9e3250ca82e4b07c847ad69bb4b032
+PODFILE CHECKSUM: 8dc21bb7efd9b0b8dd8f55a799d047e6fba8f22e
 
 COCOAPODS: 1.2.0

@@ -34,6 +34,7 @@ const propTypes = {
     name: PropTypes.string,
     image: PropTypes.string,
   }).isRequired,
+  logView: PropTypes.func.isRequired,
 
   // provided by apollo
   messages: PropTypes.shape({
@@ -95,6 +96,9 @@ class Room extends React.Component {
     if (a && b && a[0] !== b[0]) {
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     }
+  }
+  componentDidMount() {
+    this.props.logView(this.props.id);
   }
   render() {
     const { messages, title, user, loadMore } = this.props;
@@ -162,6 +166,9 @@ module.exports = compose(
       variables: { roomId: props.id, pageSize: 20 },
     }),
   }),
-  connect(state => ({ user: state.user })),
+  connect(
+    (state) => ({ user: state.user }),
+    (dispatch) => ({ logView: id => dispatch({ type: 'ROOM_VIEWED', payload: id }) }),
+  ),
   withKeyboardHeight(),
 )(Room);

@@ -3,28 +3,32 @@ import {
   Platform,
 } from 'react-native';
 import Navigator from 'native-navigation';
-import { compose, graphql } from 'react-apollo';
+import { compose } from 'react-apollo';
+import { connect } from 'react-redux';
+import { createSelector } from 'reselect';
 import FlatList from 'react-native-flat-list';
 import Screen from '../components/Screen';
-import Row from '../components/Row';
+import RoomRow from '../components/RoomRow';
 import Loader from '../components/Loader';
 import { SETTINGS, ROOM, ADD_ROOM } from '../routes';
 import {
   fetchRoomsQuery,
   fetchMoreRoomsQuery,
   newRoomsSubscription,
-  createRoomMutation,
 } from '../queries';
 import realtime from '../utils/realtime';
 
 const propTypes = {
+  // provided by redux
+  favorite: PropTypes.func.isRequired,
+  decoratedRooms: PropTypes.array,
+
   // provided by apollo
   rooms: PropTypes.shape({
     loading: PropTypes.bool.isRequired,
     allRooms: PropTypes.array,
   }).isRequired,
   loadMore: PropTypes.func.isRequired,
-  createRoom: PropTypes.func.isRequired,
 };
 
 const BUTTONS = [
@@ -44,7 +48,7 @@ const BUTTONS = [
 
 class Rooms extends React.Component {
   render() {
-    const { rooms, loadMore } = this.props;
+    const { decoratedRooms, rooms, loadMore, favorite } = this.props;
     const { loading, allRooms } = rooms;
     return (
       <Screen
@@ -61,13 +65,16 @@ class Rooms extends React.Component {
             onEndReachedThreshold={500}
             initialNumToRender={15}
             ListHeaderComponent={() => <Navigator.Spacer />}
-            data={allRooms}
+            data={decoratedRooms}
             refreshing={loading}
             keyExtractor={item => item.id}
             renderItem={({ item }) => (
-              <Row
+              <RoomRow
                 key={item.id}
                 title={item.name}
+                lastViewed={item.lastViewed}
+                favorited={item.isFavorited}
+                onFavoritePress={() => favorite(item.id)}
                 onPress={() => Navigator.push(ROOM, { id: item.id, title: item.name })}
               />
             )}
@@ -79,6 +86,28 @@ class Rooms extends React.Component {
 }
 
 Rooms.propTypes = propTypes;
+
+const compareRoom = (a, b) => {
+  if (a.isFavorited === b.isFavorited) {
+    return b.lastViewed - a.lastViewed;
+  }
+  return b.isFavorited - a.isFavorited;
+};
+
+const decoratedRooms = createSelector(
+  (state) => state.roomFavorites,
+  (state) => state.roomViews,
+  (state, props) => props.rooms.allRooms,
+  (favorites, lastViews, allRooms) => {
+    if (!allRooms || allRooms.length === 0) return [];
+    return allRooms.map(room => ({
+      ...room,
+      isFavorited: favorites.get(room.id, false),
+      lastViewed: lastViews.get(room.id, 0),
+    }))
+    .sort(compareRoom);
+  }
+);
 
 module.exports = compose(
   realtime({
@@ -92,5 +121,8 @@ module.exports = compose(
     mergeSubscription: (nodes, newNode) => [{ ...newNode }, ...nodes],
     mergeMore: (nodes, older) => [...nodes, ...older],
   }),
-  graphql(createRoomMutation, { name: 'createRoom' }),
+  connect(
+    (state, props) => ({ decoratedRooms: decoratedRooms(state, props) }),
+    (dispatch) => ({ favorite: id => dispatch({ type: 'ROOM_FAVORITE_TOGGLED', payload: id }) }),
+  ),
 )(Rooms);
