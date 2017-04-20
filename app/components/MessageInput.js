@@ -33,6 +33,11 @@ function getHeightFromContentHeight(contentHeight) {
   return height;
 }
 
+// Exercise:
+// Make MessageInput animate using LayoutAnimation in two places:
+// 1. When the send button becomes visible or hides
+// 2. When the height of the input changes
+
 class MessageInput extends React.Component {
   constructor(props) {
     super(props);
@@ -45,15 +50,9 @@ class MessageInput extends React.Component {
     this.onChange = this.onChange.bind(this);
     this.onChangeText = this.onChangeText.bind(this);
   }
-  componentWillUpdate(nextProps, nextState) {
-    if (!!nextState.text !== !!this.state.text) {
-      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    }
-  }
   onChange(e) {
     const inputHeight = getHeightFromContentHeight(e.nativeEvent.contentSize.height);
     if (this.state.inputHeight !== inputHeight) {
-      LayoutAnimation.configureNext({ ...LayoutAnimation.Presets.easeInEaseOut, duration: 100 });
       this.setState({ inputHeight });
     }
   }

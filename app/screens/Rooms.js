@@ -1,12 +1,12 @@
 import React, { PropTypes } from 'react';
 import {
   Platform,
+  ScrollView,
 } from 'react-native';
 import Navigator from 'native-navigation';
 import { compose } from 'react-apollo';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
-import FlatList from 'react-native-flat-list';
 import Screen from '../components/Screen';
 import RoomRow from '../components/RoomRow';
 import Loader from '../components/Loader';
@@ -56,30 +56,22 @@ class Rooms extends React.Component {
         rightButtons={BUTTONS}
         onRightPress={(i) => BUTTONS[i].onPress()}
       >
-        {loading ? (
-          <Loader />
-        ) : (
-          <FlatList
-            removeClippedSubviews
-            onEndReached={loadMore}
-            onEndReachedThreshold={500}
-            initialNumToRender={15}
-            ListHeaderComponent={() => <Navigator.Spacer />}
-            data={decoratedRooms}
-            refreshing={loading}
-            keyExtractor={item => item.id}
-            renderItem={({ item }) => (
+        <ScrollView>
+          <Navigator.Spacer />
+          {loading ? (
+            <Loader />
+          ) : (
+            decoratedRooms.map(r => (
               <RoomRow
-                key={item.id}
-                title={item.name}
-                lastViewed={item.lastViewed}
-                favorited={item.isFavorited}
-                onFavoritePress={() => favorite(item.id)}
-                onPress={() => Navigator.push(ROOM, { id: item.id, title: item.name })}
+                key={r.id}
+                title={r.name}
+                favorited={r.isFavorited}
+                onFavoritePress={() => favorite(r.id)}
+                onPress={() => Navigator.push(ROOM, { id: r.id, title: r.name })}
               />
-            )}
-          />
-        )}
+            ))
+          )}
+        </ScrollView>
       </Screen>
     );
   }
@@ -87,25 +79,23 @@ class Rooms extends React.Component {
 
 Rooms.propTypes = propTypes;
 
-const compareRoom = (a, b) => {
-  if (a.isFavorited === b.isFavorited) {
-    return b.lastViewed - a.lastViewed;
-  }
-  return b.isFavorited - a.isFavorited;
-};
+// Exercise:
+// Add a reducer that keeps tracks of the dates we viewed the Room screen for a particular room,
+// and then render that into the room list as part of the room row.
+// Additionally, sort the rooms rows by date last viewed in addition to whether or not it is
+// favorited.
+// Hint: the solution for this looks a lot like the code for the `isFavorited` solution.
 
 const decoratedRooms = createSelector(
   (state) => state.roomFavorites,
-  (state) => state.roomViews,
   (state, props) => props.rooms.allRooms,
-  (favorites, lastViews, allRooms) => {
+  (favorites, allRooms) => {
     if (!allRooms || allRooms.length === 0) return [];
     return allRooms.map(room => ({
       ...room,
       isFavorited: favorites.get(room.id, false),
-      lastViewed: lastViews.get(room.id, 0),
     }))
-    .sort(compareRoom);
+    .sort((a, b) => b.isFavorited - a.isFavorited);
   }
 );
 

@@ -3,7 +3,6 @@ import {
     StyleSheet,
     Text,
     View,
-    Animated,
 } from 'react-native';
 import PlatformTouchableHighlight from './PlatformTouchableHighlight';
 
@@ -45,8 +44,8 @@ class SegmentedView extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      barLeft: new Animated.Value(0),
-      barScale: new Animated.Value(1),
+      barLeft: 0,
+      barScale: 1,
     };
     this.moveTo = this.moveTo.bind(this);
     this.onLayout = this.onLayout.bind(this);
@@ -76,18 +75,14 @@ class SegmentedView extends React.Component {
       return;
     }
 
-    Animated.parallel([
-      Animated.spring(this.state.barLeft, {
-        toValue: centerX,
-        bounciness: 0,
-        useNativeDriver: true,
-      }),
-      Animated.spring(this.state.barScale, {
-        toValue: scaleX,
-        bounciness: 0,
-        useNativeDriver: true,
-      }),
-    ]).start();
+    // Exercise:
+    // Make the highlight bar of the SegmentedView animate from its current position to its
+    // next position, rather than the instantaneous change it does now.
+
+    this.setState({
+      barLeft: centerX,
+      barScale: scaleX,
+    });
   }
   defaultRenderTitle(title, i) {
     const { index, titleStyle, selectedTitleStyle } = this.props;
@@ -134,7 +129,7 @@ class SegmentedView extends React.Component {
     }
     const barContainer = (
       <View style={styles.barContainer}>
-        <Animated.View
+        <View
           style={[styles.bar, {
             transform: [
               { translateX: barLeft },

@@ -4,16 +4,14 @@ import {
   View,
   LayoutAnimation,
 } from 'react-native';
-import FlatList from 'react-native-flat-list';
+import InvertibleScrollView from 'react-native-invertible-scroll-view';
 import Navigator from 'native-navigation';
 import { compose, graphql } from 'react-apollo';
 import { connect } from 'react-redux';
 import Screen from '../components/Screen';
 import Message from '../components/Message';
-import RoomHeader from '../components/RoomHeader';
 import MessageInput from '../components/MessageInput';
 import withKeyboardHeight from '../components/withKeyboardHeight';
-import Invert from '../components/Invert';
 import Loader from '../components/Loader';
 import realtime from '../utils/realtime';
 import {
@@ -34,7 +32,6 @@ const propTypes = {
     name: PropTypes.string,
     image: PropTypes.string,
   }).isRequired,
-  logView: PropTypes.func.isRequired,
 
   // provided by apollo
   messages: PropTypes.shape({
@@ -46,6 +43,8 @@ const propTypes = {
   createMessage: PropTypes.func.isRequired,
 };
 
+// Exercise:
+// Make new messages animate in using LayoutAnimation.
 class Room extends React.Component {
   constructor(props) {
     super(props);
@@ -97,45 +96,23 @@ class Room extends React.Component {
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     }
   }
-  componentDidMount() {
-    this.props.logView(this.props.id);
-  }
   render() {
     const { messages, title, user, loadMore } = this.props;
     const { allMessages, loading, refetch } = messages;
 
-    const content = loading ? (
-      <Loader />
-    ) : (
-      <Invert style={{ flex: 1 }}>
-        <FlatList
-          style={{ paddingTop: 8 }}
-          removeClippedSubviews
-          onEndReached={loadMore}
-          onEndReachedThreshold={500}
-          ListFooterComponent={() => (
-            <RoomHeader
-              title={title}
-              loading={loading}
-              messages={allMessages}
-            />
-          )}
-          data={allMessages}
-          refreshing={loading}
-          keyExtractor={item => item.id}
-          renderItem={({ item }) => <Invert><Message {...item} /></Invert>}
-        />
-      </Invert>
-    );
-
     return (
-      <Screen
-        title={title}
-        rightImage={require('../icons/refresh.png')}
-        onRightPress={refetch}
-      >
+      <Screen>
         <View style={StyleSheet.absoluteFill}>
-          {content}
+          <InvertibleScrollView inverted>
+            {loading ? (
+              <Loader />
+            ) : (
+              allMessages.map(m => (
+                <Message key={m.id} {...m} />
+              ))
+            )}
+            <Navigator.Spacer />
+          </InvertibleScrollView>
           <MessageInput
             senderName={user.name}
             senderImage={user.image}
@@ -168,7 +145,6 @@ module.exports = compose(
   }),
   connect(
     (state) => ({ user: state.user }),
-    (dispatch) => ({ logView: id => dispatch({ type: 'ROOM_VIEWED', payload: id }) }),
   ),
   withKeyboardHeight(),
 )(Room);
