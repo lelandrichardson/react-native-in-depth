@@ -6,9 +6,3 @@
 //  Copyright © 2017 Facebook. All rights reserved.
 //
 
-
-#import <React/RCTViewManager.h>
-
-@interface LottieLoaderViewManager : RCTViewManager
-
-@end

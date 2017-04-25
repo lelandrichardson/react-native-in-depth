@@ -9,7 +9,7 @@ import { createSelector } from 'reselect';
 import FlatList from 'react-native-flat-list';
 import Screen from '../components/Screen';
 import RoomRow from '../components/RoomRow';
-import LottieLoader from '../components/LottieLoader';
+import Loader from '../components/Loader';
 import { SETTINGS, ROOM, ADD_ROOM } from '../routes';
 import {
   fetchRoomsQuery,
@@ -57,7 +57,7 @@ class Rooms extends React.Component {
         onRightPress={(i) => BUTTONS[i].onPress()}
       >
         {loading ? (
-          <LottieLoader />
+          <Loader />
         ) : (
           <FlatList
             removeClippedSubviews

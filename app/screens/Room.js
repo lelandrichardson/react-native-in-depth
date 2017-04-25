@@ -14,7 +14,7 @@ import RoomHeader from '../components/RoomHeader';
 import MessageInput from '../components/MessageInput';
 import withKeyboardHeight from '../components/withKeyboardHeight';
 import Invert from '../components/Invert';
-import LottieLoader from '../components/LottieLoader';
+import Loader from '../components/Loader';
 import realtime from '../utils/realtime';
 import {
   fetchMessagesQuery,
@@ -22,7 +22,6 @@ import {
   newMessagesSubscription,
   createMessageMutation,
 } from '../queries';
-import Analytics from '../analytics';
 
 import { SETTINGS } from '../routes';
 
@@ -87,7 +86,6 @@ class Room extends React.Component {
         };
       },
     };
-    Analytics.trackEvent('messaging', 'message_send');
     createMessage({ variables, optimisticResponse, updateQueries });
       // .then(({ data: { createMessage: message }}) => this.setState({ messageId: message.id }));
   }
@@ -106,7 +104,7 @@ class Room extends React.Component {
     const { allMessages, loading, refetch } = messages;
 
     const content = loading ? (
-      <LottieLoader />
+      <Loader />
     ) : (
       <Invert style={{ flex: 1 }}>
         <FlatList

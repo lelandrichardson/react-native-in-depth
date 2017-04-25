@@ -14,9 +14,7 @@ public class RectNativeChatPackage implements ReactPackage {
 
   @Override
   public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
-    return Arrays.<NativeModule>asList(
-        new GoogleAnalyticsBridge(reactContext)
-    );
+    return Collections.emptyList();
   }
 
   @Override
@@ -26,8 +24,6 @@ public class RectNativeChatPackage implements ReactPackage {
 
   @Override
   public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
-    return Arrays.<ViewManager>asList(
-        new LottieLoaderViewManager()
-    );
+    return Collections.emptyList();
   }
 }
