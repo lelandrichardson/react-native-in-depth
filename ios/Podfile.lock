@@ -15,6 +15,7 @@ PODS:
   - GoogleToolboxForMac/Defines (2.1.1)
   - GoogleToolboxForMac/NSData+zlib (2.1.1):
     - GoogleToolboxForMac/Defines (= 2.1.1)
+  - lottie-ios (1.5.1)
   - native-navigation (0.2.1):
     - React
   - React (0.42.3):
@@ -42,6 +43,7 @@ PODS:
 
 DEPENDENCIES:
   - Google/Analytics
+  - lottie-ios
   - native-navigation (from `../node_modules/native-navigation`)
   - React/Core (from `../node_modules/react-native`)
   - React/RCTAnimation (from `../node_modules/react-native`)
@@ -69,11 +71,12 @@ SPEC CHECKSUMS:
   Google: 813c467362eabc11385f5a5cc9ad0cb651a58f4e
   GoogleAnalytics: f42cc53a87a51fe94334821868d9c8481ff47a7b
   GoogleToolboxForMac: 8e329f1b599f2512c6b10676d45736bcc2cbbeb0
+  lottie-ios: f680a7c4cb7a567ecf258fde0f967913aff111b8
   native-navigation: 0bc771c8a427dfb0d31eb9707dde48e9fbac42fa
   React: 35e039680feacd0563677d49ba410112d2748559
   RNVectorIcons: df0ada1195e3b7c47351897c00f55fd9b8c7aa84
   Yoga: 86ce777665c8259b94ef8dbea76b84634237f4ea
 
-PODFILE CHECKSUM: 2feb3322277da6ec657b3f8a9c3638b0675021bb
+PODFILE CHECKSUM: 968b7f8236c9ac79c8d4c28e6723df7bf28072dd
 
 COCOAPODS: 1.2.0

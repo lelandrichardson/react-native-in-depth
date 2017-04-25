@@ -21,3 +21,9 @@ import './app/devtools';
 
 // the main app, including all screen registrations
 import './app';
+
+
+import { UIManager, NativeModules } from 'react-native';
+
+global.UIManager = UIManager;
+global.NativeModules = NativeModules;
