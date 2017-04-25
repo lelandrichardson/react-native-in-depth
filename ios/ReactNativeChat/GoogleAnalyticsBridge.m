@@ -16,12 +16,14 @@
 
 RCT_EXPORT_MODULE();
 
-RCT_EXPORT_METHOD(screenView:(NSString *)screenName)
-{
-  id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
-  [tracker set:kGAIScreenName value:screenName];
-  [tracker send:[[GAIDictionaryBuilder createScreenView] build]];
-}
+// Exercise:
+// build a `screenView(String screenName)` method that utilizes google analytics screenview API
+// https://developers.google.com/analytics/devguides/collection/ios/v3/screens#manual
+
+
+// Exercise:
+// build a `setUser(String userName)` method that utilizes google analytics user tracking:
+// https://developers.google.com/analytics/devguides/collection/ios/v3/user-id#implementation
 
 RCT_EXPORT_METHOD(trackEvent:(NSString *)category action:(NSString *)action optionalValues:(NSDictionary *)optionalValues)
 {
@@ -32,12 +34,6 @@ RCT_EXPORT_METHOD(trackEvent:(NSString *)category action:(NSString *)action opti
                                                         action:action
                                                          label:label
                                                          value:value] build]];
-}
-
-RCT_EXPORT_METHOD(setUser:(NSString *)user)
-{
-  id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
-  [tracker set:kGAIUserId value:user];
 }
 
 @end

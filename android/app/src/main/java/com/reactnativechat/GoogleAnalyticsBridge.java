@@ -34,12 +34,14 @@ public class GoogleAnalyticsBridge extends ReactContextBaseJavaModule {
     return GoogleAnalytics.getInstance(getReactApplicationContext());
   }
 
-  @ReactMethod
-  public void screenView(String screenName) {
-    Tracker tracker = getDefaultTracker();
-    tracker.setScreenName(screenName);
-    tracker.send(new HitBuilders.ScreenViewBuilder().build());
-  }
+// Exercise:
+// build a `screenView(String screenName)` method that utilizes google analytics screenview API
+// https://developers.google.com/analytics/devguides/collection/android/v4/#activity-or-fragment
+
+
+// Exercise:
+// build a `setUser(String userName)` method that utilizes google analytics user tracking:
+// https://developers.google.com/analytics/devguides/collection/android/v4/user-id#implementation
 
   @ReactMethod
   public void trackEvent(String category, String action, ReadableMap optionalValues) {
@@ -57,12 +59,6 @@ public class GoogleAnalyticsBridge extends ReactContextBaseJavaModule {
      }
 
     tracker.send(builder.build());
-  }
-
-  @ReactMethod
-  public void setUser(String userId) {
-    Tracker tracker = getDefaultTracker();
-    tracker.set("&uid", userId);
   }
 
 }

@@ -27,4 +27,11 @@ RCT_EXPORT_MODULE(LottieLoader)
 
 RCT_EXPORT_VIEW_PROPERTY(sourceName, NSString);
 
+// Exercise:
+// expose a `loop` boolean property that can toggle whether or not the animation loops
+
+// Exercise:
+// with `loop` false, see if you can figure out how to add an `onFinish` event
+// http://facebook.github.io/react-native/docs/native-components-ios.html#events
+
 @end
