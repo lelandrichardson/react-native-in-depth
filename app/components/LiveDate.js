@@ -3,7 +3,10 @@ import { Text } from 'react-native';
 import timeAgo from '../utils/timeAgo';
 
 const propTypes = {
-  date: PropTypes.string.isRequired,
+  date: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]).isRequired,
 };
 
 const subscribers = [];

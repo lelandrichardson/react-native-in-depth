@@ -17,6 +17,10 @@
 		8413E1BD1EAF17E5006A7A71 /* GoogleAnalyticsBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 8413E1BC1EAF17E5006A7A71 /* GoogleAnalyticsBridge.m */; };
 		8413E1C01EAF2CF1006A7A71 /* LottieLoaderViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8413E1BF1EAF2CF1006A7A71 /* LottieLoaderViewManager.m */; };
 		8413E1C31EAF35B8006A7A71 /* Watermelon.json in Resources */ = {isa = PBXBuildFile; fileRef = 8413E1C21EAF35B8006A7A71 /* Watermelon.json */; };
+		8427FF521EAFB6D600194CD1 /* spin.json in Resources */ = {isa = PBXBuildFile; fileRef = 8427FF4F1EAFB6D600194CD1 /* spin.json */; };
+		8427FF531EAFB6D600194CD1 /* juggle.json in Resources */ = {isa = PBXBuildFile; fileRef = 8427FF501EAFB6D600194CD1 /* juggle.json */; };
+		8427FF541EAFB6D600194CD1 /* fig8.json in Resources */ = {isa = PBXBuildFile; fileRef = 8427FF511EAFB6D600194CD1 /* fig8.json */; };
+		8427FF571EAFBC9900194CD1 /* LottieContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8427FF561EAFBC9900194CD1 /* LottieContainerView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,6 +41,11 @@
 		8413E1BF1EAF2CF1006A7A71 /* LottieLoaderViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LottieLoaderViewManager.m; path = ReactNativeChat/LottieLoaderViewManager.m; sourceTree = "<group>"; };
 		8413E1C11EAF2D0D006A7A71 /* LottieLoaderViewManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = LottieLoaderViewManager.h; path = ReactNativeChat/LottieLoaderViewManager.h; sourceTree = "<group>"; };
 		8413E1C21EAF35B8006A7A71 /* Watermelon.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = Watermelon.json; path = Assets/Watermelon.json; sourceTree = "<group>"; };
+		8427FF4F1EAFB6D600194CD1 /* spin.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = spin.json; path = Assets/spin.json; sourceTree = "<group>"; };
+		8427FF501EAFB6D600194CD1 /* juggle.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = juggle.json; path = Assets/juggle.json; sourceTree = "<group>"; };
+		8427FF511EAFB6D600194CD1 /* fig8.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = fig8.json; path = Assets/fig8.json; sourceTree = "<group>"; };
+		8427FF551EAFBC8800194CD1 /* LottieContainerView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = LottieContainerView.h; path = ReactNativeChat/LottieContainerView.h; sourceTree = "<group>"; };
+		8427FF561EAFBC9900194CD1 /* LottieContainerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LottieContainerView.m; path = ReactNativeChat/LottieContainerView.m; sourceTree = "<group>"; };
 		EE663F06053951943177F8E0 /* Pods_ReactNativeChat.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ReactNativeChat.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -67,6 +76,8 @@
 				8413E1BE1EAF181B006A7A71 /* GoogleAnalyticsBridge.h */,
 				8413E1BF1EAF2CF1006A7A71 /* LottieLoaderViewManager.m */,
 				8413E1C11EAF2D0D006A7A71 /* LottieLoaderViewManager.h */,
+				8427FF551EAFBC8800194CD1 /* LottieContainerView.h */,
+				8427FF561EAFBC9900194CD1 /* LottieContainerView.m */,
 			);
 			name = ReactNativeChat;
 			sourceTree = "<group>";
@@ -90,7 +101,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				8413E1C21EAF35B8006A7A71 /* Watermelon.json */,
+				8427FF4E1EAFB66900194CD1 /* Loaders */,
 				84054FD21EA81C430087D834 /* MaterialIcons.ttf */,
 				13B07FAE1A68108700A75B9A /* ReactNativeChat */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
@@ -108,6 +119,17 @@
 				13B07F961A680F5B00A75B9A /* ReactNativeChat.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		8427FF4E1EAFB66900194CD1 /* Loaders */ = {
+			isa = PBXGroup;
+			children = (
+				8427FF4F1EAFB6D600194CD1 /* spin.json */,
+				8427FF501EAFB6D600194CD1 /* juggle.json */,
+				8427FF511EAFB6D600194CD1 /* fig8.json */,
+				8413E1C21EAF35B8006A7A71 /* Watermelon.json */,
+			);
+			name = Loaders;
 			sourceTree = "<group>";
 		};
 		BEFF88A1C283FD88EFCB6C1B /* Frameworks */ = {
@@ -180,10 +202,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				8413E1C31EAF35B8006A7A71 /* Watermelon.json in Resources */,
+				8427FF521EAFB6D600194CD1 /* spin.json in Resources */,
 				84054FD31EA81C430087D834 /* MaterialIcons.ttf in Resources */,
 				8413E1BB1EAF15B2006A7A71 /* GoogleService-Info.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				8427FF531EAFB6D600194CD1 /* juggle.json in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
+				8427FF541EAFB6D600194CD1 /* fig8.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -256,6 +281,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8427FF571EAFBC9900194CD1 /* LottieContainerView.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				8413E1C01EAF2CF1006A7A71 /* LottieLoaderViewManager.m in Sources */,

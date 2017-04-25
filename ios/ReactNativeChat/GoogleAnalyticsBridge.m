@@ -23,9 +23,11 @@ RCT_EXPORT_METHOD(screenView:(NSString *)screenName)
   [tracker send:[[GAIDictionaryBuilder createScreenView] build]];
 }
 
-RCT_EXPORT_METHOD(trackEvent:(NSString *)category action:(NSString *)action label:(NSString *)label value:(NSNumber *)value)
+RCT_EXPORT_METHOD(trackEvent:(NSString *)category action:(NSString *)action optionalValues:(NSDictionary *)optionalValues)
 {
   id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+  NSString *label = [RCTConvert NSString:optionalValues[@"label"]];
+  NSNumber *value = [RCTConvert NSNumber:optionalValues[@"value"]];
   [tracker send:[[GAIDictionaryBuilder createEventWithCategory:category
                                                         action:action
                                                          label:label

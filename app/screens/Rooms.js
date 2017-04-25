@@ -56,7 +56,7 @@ class Rooms extends React.Component {
         rightButtons={BUTTONS}
         onRightPress={(i) => BUTTONS[i].onPress()}
       >
-        {true || loading ? (
+        {loading ? (
           <LottieLoader />
         ) : (
           <FlatList

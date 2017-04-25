@@ -4,6 +4,7 @@ package com.reactnativechat;
 import com.airbnb.lottie.LottieAnimationView;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
+import com.facebook.react.uimanager.annotations.ReactProp;
 
 public class LottieLoaderViewManager extends SimpleViewManager<LottieAnimationView> {
 
@@ -16,9 +17,13 @@ public class LottieLoaderViewManager extends SimpleViewManager<LottieAnimationVi
 
   @Override
   public LottieAnimationView createViewInstance(ThemedReactContext context) {
-    LottieAnimationView view = new LottieAnimationView(context);
-    view.setAnimation("Lottie");
+    return new LottieAnimationView(context);
+  }
+
+  @ReactProp(name = "sourceName")
+  public void setSourceName(LottieAnimationView view, String sourceName) {
+    view.setAnimation(sourceName + ".json");
     view.loop(true);
-    return view;
+    view.playAnimation();
   }
 }

@@ -7,9 +7,13 @@ import KeyboardContainer from './components/KeyboardContainer';
 import unwrapDefaultExport from './utils/unwrapDefaultExport';
 import store from './store';
 import client from './client';
+import Analytics from './analytics';
 
 function wrapComponent(screenName, ScreenThunk) {
   class Wrapper extends React.Component {
+    componentDidMount() {
+      Analytics.screenView(screenName);
+    }
     render() {
       const Component = unwrapDefaultExport(ScreenThunk());
       let screen = <Component {...this.props} />;
