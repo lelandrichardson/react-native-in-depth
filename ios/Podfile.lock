@@ -1,4 +1,20 @@
 PODS:
+  - FirebaseAnalytics (3.7.0):
+    - FirebaseCore (~> 3.5)
+    - FirebaseInstanceID (~> 1.0)
+    - GoogleToolboxForMac/NSData+zlib (~> 2.1)
+  - FirebaseCore (3.5.2):
+    - GoogleToolboxForMac/NSData+zlib (~> 2.1)
+  - FirebaseInstanceID (1.0.9)
+  - Google/Analytics (3.0.3):
+    - Google/Core
+    - GoogleAnalytics (~> 3.12)
+  - Google/Core (3.0.3):
+    - FirebaseAnalytics (~> 3.2)
+  - GoogleAnalytics (3.17.0)
+  - GoogleToolboxForMac/Defines (2.1.1)
+  - GoogleToolboxForMac/NSData+zlib (2.1.1):
+    - GoogleToolboxForMac/Defines (= 2.1.1)
   - native-navigation (0.2.1):
     - React
   - React (0.42.3):
@@ -25,6 +41,7 @@ PODS:
   - Yoga (0.42.3.React)
 
 DEPENDENCIES:
+  - Google/Analytics
   - native-navigation (from `../node_modules/native-navigation`)
   - React/Core (from `../node_modules/react-native`)
   - React/RCTAnimation (from `../node_modules/react-native`)
@@ -46,11 +63,17 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga/Yoga.podspec"
 
 SPEC CHECKSUMS:
+  FirebaseAnalytics: 0d1b7d81d5021155be37702a94ba1ec16d45365d
+  FirebaseCore: a024587e43778508700af8c6b1209f7c4516ba02
+  FirebaseInstanceID: 2d0518b1378fe9d685ef40cbdd63d2fdc1125339
+  Google: 813c467362eabc11385f5a5cc9ad0cb651a58f4e
+  GoogleAnalytics: f42cc53a87a51fe94334821868d9c8481ff47a7b
+  GoogleToolboxForMac: 8e329f1b599f2512c6b10676d45736bcc2cbbeb0
   native-navigation: 0bc771c8a427dfb0d31eb9707dde48e9fbac42fa
   React: 35e039680feacd0563677d49ba410112d2748559
   RNVectorIcons: df0ada1195e3b7c47351897c00f55fd9b8c7aa84
   Yoga: 86ce777665c8259b94ef8dbea76b84634237f4ea
 
-PODFILE CHECKSUM: 8dc21bb7efd9b0b8dd8f55a799d047e6fba8f22e
+PODFILE CHECKSUM: 2feb3322277da6ec657b3f8a9c3638b0675021bb
 
 COCOAPODS: 1.2.0

@@ -35,6 +35,7 @@
     "react-native": "^0.42.0",
     "react-native-invertible-scroll-view": "^1.0.0",
     "react-native-keyboard-spacer": "^0.3.1",
+    "react-native-safe-module": "^1.1.1",
     "react-native-vector-icons": "^4.0.1",
     "react-redux": "^5.0.4",
     "redux": "^3.6.0",

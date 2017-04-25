@@ -1,0 +1,38 @@
+{
+  "project_info": {
+    "project_number": "219559895683",
+    "project_id": "reactnativechat"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:219559895683:android:e50c5dae8eef41ea",
+        "android_client_info": {
+          "package_name": "com.reactnativechat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA0N7aK9JdHyu7X8_50qjktmSchaBU6Bnw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 2,
+          "analytics_property": {
+            "tracking_id": "UA-98029628-1"
+          }
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

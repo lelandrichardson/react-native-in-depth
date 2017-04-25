@@ -10,12 +10,23 @@
 #import "AppDelegate.h"
 
 #import <React/RCTBundleURLProvider.h>
+#import <Google/Analytics.h>
 @import NativeNavigation;
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  // Configure tracker from GoogleService-Info.plist.
+  NSError *configureError;
+  [[GGLContext sharedInstance] configureWithError:&configureError];
+  NSAssert(!configureError, @"Error configuring Google services: %@", configureError);
+
+  // Optional: configure GAI options.
+  GAI *gai = [GAI sharedInstance];
+  gai.trackUncaughtExceptions = YES;  // report uncaught exceptions
+  gai.logger.logLevel = kGAILogLevelVerbose;  // remove before app release
+
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self
                                             launchOptions:launchOptions];
   ReactNavigationCoordinator *coordinator = [ReactNavigationCoordinator sharedInstance];
