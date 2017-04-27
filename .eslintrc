@@ -98,7 +98,8 @@
     "__DEV__": true,
     "__TESTENV__": true,
     "__DEBUGGING_REMOTELY__": true,
-    "requestAnimationFrame": true
+    "requestAnimationFrame": true,
+    "cancelAnimationFrame": true
   },
   "settings": {
     "flowtype": {

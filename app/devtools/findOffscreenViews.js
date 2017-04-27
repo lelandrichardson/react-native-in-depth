@@ -96,7 +96,7 @@ function ancestorsOfNode(node) {
       break; // manually stop here since this is top of hierarchy that we care about...
     }
     // skip over these because they are so common, and always have `View` and `Text` as parents
-    if (el.name !== 'RCTView' && el.name !== 'RCTText' && el.name !== '"') {
+    if (!el.name.startsWith('RCT') && el.name !== '"') {
       nodes.push(el);
     }
     el = el.parent;

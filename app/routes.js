@@ -4,3 +4,4 @@ export const ROOMS = '/rooms';
 export const SETTINGS = '/settings';
 export const ADD_ROOM = '/add-room';
 export const ANIMATIONS = '/animations';
+export const SEARCH = '/search';

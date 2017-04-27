@@ -7,6 +7,7 @@ import {
 import PlatformTouchableOpacity from './PlatformTouchableOpacity';
 import Avatar from './Avatar';
 import LiveDate from './LiveDate';
+import sleep from '../utils/sleep';
 
 const propTypes = {
   text: PropTypes.string.isRequired,
@@ -26,7 +27,7 @@ class Message extends React.Component {
       senderImage,
       createdAt,
     } = this.props;
-
+    sleep(30);
     return (
       <View style={styles.container}>
         <Avatar

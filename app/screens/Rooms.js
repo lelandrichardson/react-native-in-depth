@@ -1,16 +1,16 @@
 import React, { PropTypes } from 'react';
 import {
   Platform,
+  ScrollView,
 } from 'react-native';
 import Navigator from 'native-navigation';
 import { compose } from 'react-apollo';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
-import FlatList from 'react-native-flat-list';
 import Screen from '../components/Screen';
 import RoomRow from '../components/RoomRow';
 import LottieLoader from '../components/LottieLoader';
-import { SETTINGS, ROOM, ADD_ROOM } from '../routes';
+import { SETTINGS, ROOM, ADD_ROOM, SEARCH } from '../routes';
 import {
   fetchRoomsQuery,
   fetchMoreRoomsQuery,
@@ -46,6 +46,25 @@ const BUTTONS = [
   },
 ];
 
+// EXERCISE:
+// This screen renders a bunch of RoomRow components in a scrollview. The RoomRows that are
+// offscreen should ideally not be attached to the view hierarchy when they are offscreen.
+// Use the "Perf Monitor" in the ios simulator to see the # of views attached vs. the # of
+// react component instances.
+
+// EXERCISE:
+// If the numbers seem higher than they should be, use the `__findOffscreenViews()` devtool to
+// locate the views which you could optimize by setting `removeClippedSubviews` to true
+
+// EXERCISE:
+// Use `__Perf.start()` and `__Perf.stop()` and `__Perf.printExclusive()` or `__Perf.printWasted()`
+// to find some components that are unnecessarily updating. Consider also using `__logLifecycle()`
+// to pinpoint what components are updating and when. Use this information to potentially change
+// some components into pure components or by implementing their `shouldComponentUpdate` method
+
+// EXERCISE:
+// Try refactoring this screen to use `FlatList` instead of `ScrollView`.
+
 class Rooms extends React.Component {
   render() {
     const { decoratedRooms, rooms, loadMore, favorite } = this.props;
@@ -53,22 +72,17 @@ class Rooms extends React.Component {
     return (
       <Screen
         title="Rooms"
+        leftImage={require('../icons/alarm.png')}
+        onLeftPress={() => Navigator.present(SEARCH)}
         rightButtons={BUTTONS}
         onRightPress={(i) => BUTTONS[i].onPress()}
       >
-        {loading ? (
-          <LottieLoader />
-        ) : (
-          <FlatList
-            removeClippedSubviews
-            onEndReached={loadMore}
-            onEndReachedThreshold={500}
-            initialNumToRender={15}
-            ListHeaderComponent={() => <Navigator.Spacer />}
-            data={decoratedRooms}
-            refreshing={loading}
-            keyExtractor={item => item.id}
-            renderItem={({ item }) => (
+        <ScrollView>
+          <Navigator.Spacer />
+          {loading ? (
+            <LottieLoader />
+          ) : (
+            decoratedRooms.map(item => (
               <RoomRow
                 key={item.id}
                 title={item.name}
@@ -77,9 +91,9 @@ class Rooms extends React.Component {
                 onFavoritePress={() => favorite(item.id)}
                 onPress={() => Navigator.push(ROOM, { id: item.id, title: item.name })}
               />
-            )}
-          />
-        )}
+            ))
+          )}
+        </ScrollView>
       </Screen>
     );
   }

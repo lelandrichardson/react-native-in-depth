@@ -4,7 +4,7 @@ import {
   View,
   LayoutAnimation,
 } from 'react-native';
-import FlatList from 'react-native-flat-list';
+import InvertibleScrollView from 'react-native-invertible-scroll-view';
 import Navigator from 'native-navigation';
 import { compose, graphql } from 'react-apollo';
 import { connect } from 'react-redux';
@@ -13,7 +13,6 @@ import Message from '../components/Message';
 import RoomHeader from '../components/RoomHeader';
 import MessageInput from '../components/MessageInput';
 import withKeyboardHeight from '../components/withKeyboardHeight';
-import Invert from '../components/Invert';
 import LottieLoader from '../components/LottieLoader';
 import realtime from '../utils/realtime';
 import {
@@ -46,6 +45,25 @@ const propTypes = {
   loadMore: PropTypes.func.isRequired,
   createMessage: PropTypes.func.isRequired,
 };
+
+// EXERCISE:
+// This screen renders a bunch of Message components in a scrollview. The Messages that are
+// offscreen should ideally not be attached to the view hierarchy when they are offscreen.
+// Use the "Perf Monitor" in the ios simulator to see the # of views attached vs. the # of
+// react component instances.
+
+// EXERCISE:
+// If the numbers seem higher than they should be, use the `__findOffscreenViews()` devtool to
+// locate the views which you could optimize by setting `removeClippedSubviews` to true
+
+// EXERCISE:
+// Use `__Perf.start()` and `__Perf.stop()` and `__Perf.printExclusive()` or `__Perf.printWasted()`
+// to find some components that are unnecessarily updating. Consider also using `__logLifecycle()`
+// to pinpoint what components are updating and when. Use this information to potentially change
+// some components into pure components or by implementing their `shouldComponentUpdate` method
+
+// EXERCISE:
+// Try refactoring this screen to use `FlatList` instead of `ScrollView`.
 
 class Room extends React.Component {
   constructor(props) {
@@ -105,30 +123,6 @@ class Room extends React.Component {
     const { messages, title, user, loadMore } = this.props;
     const { allMessages, loading, refetch } = messages;
 
-    const content = loading ? (
-      <LottieLoader />
-    ) : (
-      <Invert style={{ flex: 1 }}>
-        <FlatList
-          style={{ paddingTop: 8 }}
-          removeClippedSubviews
-          onEndReached={loadMore}
-          onEndReachedThreshold={500}
-          ListFooterComponent={() => (
-            <RoomHeader
-              title={title}
-              loading={loading}
-              messages={allMessages}
-            />
-          )}
-          data={allMessages}
-          refreshing={loading}
-          keyExtractor={item => item.id}
-          renderItem={({ item }) => <Invert><Message {...item} /></Invert>}
-        />
-      </Invert>
-    );
-
     return (
       <Screen
         title={title}
@@ -136,7 +130,23 @@ class Room extends React.Component {
         onRightPress={refetch}
       >
         <View style={StyleSheet.absoluteFill}>
-          {content}
+          <InvertibleScrollView inverted style={{ paddingTop: 8 }}>
+            {loading ? (
+              <LottieLoader />
+            ) : (
+              allMessages.map(m => (
+                <Message key={m.id} {...m} />
+              ))
+            )}
+            {!loading && (
+              <RoomHeader
+                title={title}
+                loading={loading}
+                messages={allMessages}
+              />
+            )}
+            <Navigator.Spacer />
+          </InvertibleScrollView>
           <MessageInput
             senderName={user.name}
             senderImage={user.image}
