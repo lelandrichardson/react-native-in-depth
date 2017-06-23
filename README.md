@@ -8,7 +8,7 @@
 - **React Native Debugger** [Install Instructions](#install-react-native-debugger)
 - **React Native CLI** [Install Instructions](#install-watchman)
 - **JDK** [Install Instructions](#install-jdk)
-- **XCode** [Install Instructions](#install-xcode)
+- **Xcode** [Install Instructions](#install-xcode)
 
 Note: you don't technically need to have both the android and ios environments set up to develop
 on this app, but it is encouraged to have both and to develop on both at the same time when writing
@@ -73,7 +73,7 @@ Open the React Native Debugger with `CMD + d` in the iOS emulator or `CMD + m` i
 
 ## Install NPM
 
-Note: verify you don't already have this isntalled by running `node --version`. If it returns anything greater than 6, you're good.
+Note: verify you don't already have this installed by running `node --version`. If it returns anything greater than 6, you're good.
 
 You will want to have node and npm installed on your machine.
 
@@ -94,7 +94,7 @@ You should be ready to go!
 
 ## Install Watchman
 
-Note: verify you don't already have this isntalled by running `which watchman`.
+Note: verify you don't already have this installed by running `which watchman`.
 
 ```bash
 brew install watchman
@@ -108,7 +108,7 @@ brew update && brew cask install react-native-debugger
 
 ## Install React Native CLI
 
-Note: verify you don't already have this isntalled by running `which react-native`.
+Note: verify you don't already have this installed by running `which react-native`.
 
 ```bash
 npm i -g react-native-cli
@@ -116,13 +116,13 @@ npm i -g react-native-cli
 
 ## Install JDK
 
-Note: verify you don't already have this isntalled by running `echo $ANDROID_HOME`.
+Note: verify you don't already have this installed by running `echo $ANDROID_HOME`.
 
-Download and isntall [here](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
+Download and install [here](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
 
 You'll also probably want to follow the instructions laid out [here](http://facebook.github.io/react-native/docs/getting-started.html#android-development-environment)
 
 
-## Install XCode
+## Install Xcode
 
-Install XCode from the Mac App store if you do not have it.
+Install Xcode from the Mac App store if you do not have it.
